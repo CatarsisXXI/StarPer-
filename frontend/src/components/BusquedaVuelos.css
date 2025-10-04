@@ -1,0 +1,338 @@
+.busqueda-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: 'Arial', sans-serif;
+}
+
+.busqueda-header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.busqueda-header h1 {
+  color: #2c3e50;
+  font-size: 2.5rem;
+  margin-bottom: 10px;
+}
+
+.busqueda-header p {
+  color: #7f8c8d;
+  font-size: 1.1rem;
+}
+
+.filtros-section {
+  margin-bottom: 40px;
+}
+
+.filtros-card {
+  background: white;
+  border-radius: 10px;
+  padding: 30px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.filtros-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+.filtro-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.filtro-group label {
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: #2c3e50;
+}
+
+.filtro-group select,
+.filtro-group input {
+  padding: 12px;
+  border: 2px solid #e1e8ed;
+  border-radius: 6px;
+  font-size: 16px;
+  transition: border-color 0.3s ease;
+}
+
+.filtro-group select:focus,
+.filtro-group input:focus {
+  outline: none;
+  border-color: #3498db;
+}
+
+.pasajeros-selector {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.pasajero-control {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.pasajero-control span:first-child {
+  font-weight: 500;
+  color: #2c3e50;
+}
+
+.control-buttons {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.control-buttons button {
+  width: 30px;
+  height: 30px;
+  border: none;
+  border-radius: 50%;
+  background: #3498db;
+  color: white;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s ease;
+}
+
+.control-buttons button:hover:not(:disabled) {
+  background: #2980b9;
+}
+
+.control-buttons button:disabled {
+  background: #bdc3c7;
+  cursor: not-allowed;
+}
+
+.control-buttons span {
+  min-width: 20px;
+  text-align: center;
+  font-weight: 600;
+}
+
+.buscar-button {
+  width: 100%;
+  padding: 15px;
+  background: #e74c3c;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 18px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.buscar-button:hover:not(:disabled) {
+  background: #c0392b;
+}
+
+.buscar-button:disabled {
+  background: #bdc3c7;
+  cursor: not-allowed;
+}
+
+.error-message {
+  margin-top: 15px;
+  padding: 12px;
+  background: #ffeaea;
+  color: #e74c3c;
+  border-radius: 6px;
+  border: 1px solid #f5c6cb;
+  text-align: center;
+}
+
+.resultados-section h2 {
+  color: #2c3e50;
+  margin-bottom: 20px;
+  font-size: 1.8rem;
+}
+
+.vuelos-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.vuelo-card {
+  background: white;
+  border-radius: 10px;
+  padding: 25px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e1e8ed;
+}
+
+.vuelo-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #e1e8ed;
+}
+
+.ruta {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #2c3e50;
+}
+
+.ruta .origen,
+.ruta .destino {
+  color: #3498db;
+}
+
+.ruta .flecha {
+  margin: 0 10px;
+  color: #7f8c8d;
+}
+
+.avion-info {
+  color: #7f8c8d;
+  font-size: 0.9rem;
+}
+
+.vuelo-detalles {
+  margin-bottom: 20px;
+}
+
+.horario {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.salida,
+.llegada {
+  text-align: center;
+  flex: 1;
+}
+
+.salida .hora,
+.llegada .hora {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #2c3e50;
+  display: block;
+}
+
+.salida .fecha,
+.llegada .fecha {
+  font-size: 0.9rem;
+  color: #7f8c8d;
+  margin-top: 5px;
+}
+
+.duracion {
+  text-align: center;
+  color: #7f8c8d;
+  font-size: 0.9rem;
+}
+
+.vuelo-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 15px;
+  border-top: 1px solid #e1e8ed;
+}
+
+.precio {
+  text-align: right;
+}
+
+.precio .monto {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #e74c3c;
+  display: block;
+}
+
+.precio .por-persona {
+  font-size: 0.8rem;
+  color: #7f8c8d;
+}
+
+.comprar-button {
+  padding: 12px 25px;
+  background: #27ae60;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.comprar-button:hover {
+  background: #229954;
+}
+
+.no-resultados {
+  text-align: center;
+  padding: 50px 20px;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.no-resultados h3 {
+  color: #2c3e50;
+  margin-bottom: 10px;
+  font-size: 1.5rem;
+}
+
+.no-resultados p {
+  color: #7f8c8d;
+  font-size: 1rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .busqueda-container {
+    padding: 15px;
+  }
+
+  .busqueda-header h1 {
+    font-size: 2rem;
+  }
+
+  .filtros-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .vuelo-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .horario {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .vuelo-footer {
+    flex-direction: column;
+    gap: 15px;
+    align-items: stretch;
+  }
+
+  .precio {
+    text-align: center;
+  }
+
+  .comprar-button {
+    width: 100%;
+  }
+}
