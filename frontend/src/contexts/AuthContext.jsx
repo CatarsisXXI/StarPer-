@@ -36,41 +36,49 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const login = async (email, password) => {
-    try {
-      const response = await axios.post('http://localhost:5146/api/auth/login', {
-        email,
-        password
-      });
+  try {
+    const response = await axios.post('http://localhost:5146/api/auth/login', {
+      email,
+      password
+    });
 
-      console.log('Login response:', response.data); // Debug log
+    console.log('Login response:', response.data); // Debug log
 
-      const responseData = response.data;
-      const token = responseData.Token || responseData.token;
-      const userData = responseData.User || responseData.user;
-      const success = responseData.Success || responseData.success;
+    const responseData = response.data;
+    const token = responseData.Token || responseData.token;
+    const success = responseData.Success || responseData.success;
 
-      if (!success || !userData) {
-        console.error('Invalid response structure:', responseData);
-        return {
-          success: false,
-          error: 'Respuesta del servidor inválida'
-        };
-      }
-
-      localStorage.setItem('token', token);
-      localStorage.setItem('user', JSON.stringify(userData));
-      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-
-      setUser(userData);
-      return { success: true, user: userData };
-    } catch (error) {
-      console.error('Login error:', error);
+    if (!success || !responseData.User) {
+      console.error('Invalid response structure:', responseData);
       return {
         success: false,
-        error: error.response?.data?.message || error.response?.data || 'Error al iniciar sesión'
+        error: 'Respuesta del servidor inválida'
       };
     }
-  };
+
+    // Normalizamos los campos de usuario para evitar errores de mayúsculas/minúsculas
+    const rawUser = responseData.User || responseData.user;
+
+    const userData = {
+    ...rawUser,
+    role: rawUser?.Role || rawUser?.role || '',  // convierte Role → role
+    email: rawUser?.Email || rawUser?.email || ''
+};
+
+    localStorage.setItem('token', token);
+    localStorage.setItem('user', JSON.stringify(userData));
+    axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+    setUser(userData);
+    return { success: true, user: userData };
+
+  } catch (error) {
+    console.error('Login error:', error);
+    return {
+      success: false,
+      error: error.response?.data?.message || error.response?.data || 'Error al iniciar sesión'
+    };
+  }
+};
 
   const register = async (userData) => {
     try {
@@ -101,8 +109,9 @@ export const AuthProvider = ({ children }) => {
   };
 
   const isAdmin = () => {
-    return user && user.role === 'Admin';
-  };
+  return user && user.role === 'Admin';
+};
+
 
   const value = {
     user,

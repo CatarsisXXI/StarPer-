@@ -13,7 +13,6 @@ import AvionesCRUD from './components/crud/AvionesCRUD';
 import VuelosCRUD from './components/crud/VuelosCRUD';
 import PersonalCRUD from './components/crud/PersonalCRUD';
 import CiudadesCRUD from './components/crud/CiudadesCRUD';
-import AsientosCRUD from './components/crud/AsientosCRUD';
 import AsignarPersonalCRUD from './components/crud/AsignarPersonalCRUD';
 import ComprarBoleto from './components/ComprarBoleto';
  import './App.css';
@@ -62,11 +61,6 @@ import ComprarBoleto from './components/ComprarBoleto';
           <Route path="/ciudades" element={
             <AdminRoute>
               <CiudadesCRUD />
-            </AdminRoute>
-          } />
-          <Route path="/asientos" element={
-            <AdminRoute>
-              <AsientosCRUD />
             </AdminRoute>
           } />
           <Route path="/asignar-personal" element={

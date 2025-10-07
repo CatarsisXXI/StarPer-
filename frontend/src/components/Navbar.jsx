@@ -65,7 +65,6 @@ const Navbar = () => {
                     <Link to="/vuelos" className="dropdown-item">Vuelos</Link>
                     <Link to="/personal" className="dropdown-item">Personal</Link>
                     <Link to="/ciudades" className="dropdown-item">Ciudades</Link>
-                    <Link to="/asientos" className="dropdown-item">Asientos</Link>
                     <Link to="/asignar-personal" className="dropdown-item">Asignar Personal</Link>
                   </div>
                 </div>
@@ -150,7 +149,6 @@ const Navbar = () => {
               <Link to="/vuelos" className="mobile-nav-link" onClick={closeMobileMenu}>Vuelos</Link>
               <Link to="/personal" className="mobile-nav-link" onClick={closeMobileMenu}>Personal</Link>
               <Link to="/ciudades" className="mobile-nav-link" onClick={closeMobileMenu}>Ciudades</Link>
-              <Link to="/asientos" className="mobile-nav-link" onClick={closeMobileMenu}>Asientos</Link>
               <Link to="/asignar-personal" className="mobile-nav-link" onClick={closeMobileMenu}>Asignar Personal</Link>
               </div>
               <div className="mobile-user-section">

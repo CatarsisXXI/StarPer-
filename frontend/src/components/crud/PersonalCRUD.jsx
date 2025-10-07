@@ -21,8 +21,9 @@ const PersonalCRUD = () => {
       const response = await api.get('/Personal');
       const data = response.data;
       // Manejar caso donde venga $values
-      setPersonal(Array.isArray(data) ? data : data?.$values || []);
-      console.log('Respuesta API Personal:', data);
+      const listaPersonal = Array.isArray(data) ? data : data?.$values || [];
+      setPersonal(listaPersonal);
+      console.log('Respuesta API Personal:', listaPersonal);
     } catch (error) {
       console.error('Error fetching personal:', error);
     } finally {
@@ -36,9 +37,9 @@ const PersonalCRUD = () => {
     try {
       setSubmitting(true);
       await api.post('/Personal', {
-        nombre: nombre.trim(),
-        apellido: apellido.trim(),
-        puesto: puesto.trim(),
+        Nombre: nombre.trim(),
+        Apellido: apellido.trim(),
+        Puesto: puesto.trim(),
       });
       clearForm();
       fetchPersonal();
@@ -50,10 +51,10 @@ const PersonalCRUD = () => {
   };
 
   const handleEdit = (persona) => {
-    setEditingId(persona.personalID);
-    setNombre(persona.nombre);
-    setApellido(persona.apellido);
-    setPuesto(persona.puesto);
+    setEditingId(persona.PersonalID);
+    setNombre(persona.Nombre);
+    setApellido(persona.Apellido);
+    setPuesto(persona.Puesto);
   };
 
   const handleUpdate = async () => {
@@ -62,9 +63,9 @@ const PersonalCRUD = () => {
     try {
       setSubmitting(true);
       await api.put(`/Personal/${editingId}`, {
-        nombre: nombre.trim(),
-        apellido: apellido.trim(),
-        puesto: puesto.trim(),
+        Nombre: nombre.trim(),
+        Apellido: apellido.trim(),
+        Puesto: puesto.trim(),
       });
       clearForm();
       fetchPersonal();
@@ -208,14 +209,14 @@ const PersonalCRUD = () => {
                 </thead>
                 <tbody>
                   {personal.map((persona) => (
-                    <tr key={persona.personalID}>
+                    <tr key={persona.PersonalID}>
                       <td className="model-cell">
                         <div className="model-info">
-                          <span className="model-name">{persona.nombre} {persona.apellido}</span>
+                          <span className="model-name">{persona.Nombre} {persona.Apellido}</span>
                         </div>
                       </td>
                       <td>
-                        <span className="capacity-badge">{persona.puesto}</span>
+                        <span className="capacity-badge">{persona.Puesto}</span>
                       </td>
                       <td>
                         <div className="action-buttons">
@@ -227,7 +228,7 @@ const PersonalCRUD = () => {
                             ✏️ Editar
                           </button>
                           <button
-                            onClick={() => handleDelete(persona.personalID)}
+                            onClick={() => handleDelete(persona.PersonalID)}
                             className="btn btn-delete"
                             title="Eliminar personal"
                           >

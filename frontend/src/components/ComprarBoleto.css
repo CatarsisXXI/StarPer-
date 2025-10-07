@@ -1,0 +1,124 @@
+.comprar-container {
+  max-width: 900px;
+  margin: 40px auto;
+  background: #fff;
+  border-radius: 16px;
+  padding: 30px 40px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+  font-family: "Poppins", sans-serif;
+}
+
+/* ✅ Título principal */
+.comprar-container .titulo-compra {
+  text-align: center;
+  color: #1a237e;
+  font-weight: 600;
+  margin-bottom: 25px;
+}
+
+/* ✅ Tarjetas (detalles y pasajeros) */
+.comprar-container .card-vuelo,
+.comprar-container .card-pasajeros {
+  background: #f9fafc;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  padding: 20px 25px;
+  margin-bottom: 25px;
+}
+
+.comprar-container .card-vuelo h3,
+.comprar-container .card-pasajeros h3 {
+  color: #0d47a1;
+  margin-bottom: 10px;
+}
+
+/* ✅ Formulario de pasajeros */
+.comprar-container .pasajero-form {
+  border-top: 1px dashed #ccc;
+  padding-top: 15px;
+  margin-top: 15px;
+}
+
+.comprar-container .input-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.comprar-container input,
+.comprar-container select {
+  flex: 1;
+  min-width: 150px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+  background-color: #fff;
+}
+
+.comprar-container input:focus,
+.comprar-container select:focus {
+  border-color: #1976d2;
+  outline: none;
+  box-shadow: 0 0 4px rgba(25, 118, 210, 0.3);
+}
+
+/* ✅ Sección total */
+.comprar-container .total-container {
+  text-align: center;
+  font-size: 18px;
+  margin: 20px 0;
+}
+
+.comprar-container .precio-total {
+  color: #1b5e20;
+  font-weight: 600;
+  font-size: 22px;
+}
+
+/* ✅ Botones */
+.comprar-container .acciones {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 25px;
+}
+
+.comprar-container .btn-confirmar,
+.comprar-container .btn-volver {
+  padding: 10px 20px;
+  border-radius: 10px;
+  border: none;
+  font-weight: 500;
+  cursor: pointer;
+  transition: 0.3s;
+  font-size: 15px;
+}
+
+.comprar-container .btn-confirmar {
+  background: #1565c0;
+  color: white;
+}
+
+.comprar-container .btn-confirmar:hover {
+  background: #0d47a1;
+}
+
+.comprar-container .btn-volver {
+  background: #e0e0e0;
+  color: #333;
+}
+
+.comprar-container .btn-volver:hover {
+  background: #bdbdbd;
+}
+
+/* ✅ Mensajes de carga o error */
+.comprar-container .loading,
+.comprar-container .error {
+  text-align: center;
+  color: #444;
+  font-size: 16px;
+  margin-top: 30px;
+}

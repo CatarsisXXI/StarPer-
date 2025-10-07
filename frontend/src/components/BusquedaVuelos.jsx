@@ -74,14 +74,14 @@ const BusquedaVuelos = () => {
       console.log('Vuelos API:', rawVuelos);
 
       let vuelosFiltrados = rawVuelos.filter(vuelo =>
-        Number(vuelo.origenID) === Number(filtros.origen) &&
-        Number(vuelo.destinoID) === Number(filtros.destino)
-      );
+  Number(vuelo.OrigenID) === Number(filtros.origen) &&
+  Number(vuelo.DestinoID) === Number(filtros.destino)
+);
 
       if (filtros.fecha) {
         const fechaSeleccionada = filtros.fecha;
         vuelosFiltrados = vuelosFiltrados.filter(vuelo => {
-          const vueloFecha = new Date(vuelo.fechaHoraSalida).toISOString().slice(0, 10);
+          const vueloFecha = new Date(vuelo.FechaHoraSalida).toISOString().slice(0, 10);
           return vueloFecha === fechaSeleccionada;
         });
       }
@@ -152,13 +152,12 @@ const BusquedaVuelos = () => {
               >
                 <option value="">Seleccionar origen</option>
                 {ciudades.map(ciudad => (
-                  <option key={ciudad.ciudadID} value={ciudad.ciudadID}>
-                    {ciudad.nombre}
-                  </option>
-                ))}
+  <option key={ciudad.CiudadID} value={ciudad.CiudadID}>
+    {ciudad.Nombre}
+  </option>
+))}
               </select>
             </div>
-
             <div className="filtro-group">
               <label htmlFor="destino">Destino</label>
               <select
@@ -169,12 +168,12 @@ const BusquedaVuelos = () => {
               >
                 <option value="">Seleccionar destino</option>
                 {ciudades
-                  .filter(c => c.ciudadID.toString() !== filtros.origen)
-                  .map(ciudad => (
-                    <option key={ciudad.ciudadID} value={ciudad.ciudadID}>
-                      {ciudad.nombre}
-                    </option>
-                  ))}
+  .filter(c => c && c.CiudadID != null && c.CiudadID.toString() !== filtros.origen)
+  .map(ciudad => (
+    <option key={ciudad.CiudadID} value={ciudad.CiudadID}>
+      {ciudad.Nombre}
+    </option>
+  ))}
               </select>
             </div>
 
@@ -208,7 +207,6 @@ const BusquedaVuelos = () => {
                       type="button"
                       onClick={() => handlePasajerosChange('adultos', 'incrementar')}
                     >
-                      +
                     </button>
                   </div>
                 </div>
@@ -228,7 +226,6 @@ const BusquedaVuelos = () => {
                       type="button"
                       onClick={() => handlePasajerosChange('ninos', 'incrementar')}
                     >
-                      +
                     </button>
                   </div>
                 </div>
@@ -248,7 +245,6 @@ const BusquedaVuelos = () => {
                       type="button"
                       onClick={() => handlePasajerosChange('bebes', 'incrementar')}
                     >
-                      +
                     </button>
                   </div>
                 </div>
@@ -278,48 +274,48 @@ const BusquedaVuelos = () => {
           <h2>Vuelos Disponibles</h2>
           <div className="vuelos-list">
             {vuelos.map((vuelo) => {
-              const origenNombre = ciudades.find(c => c.ciudadID === vuelo.origenID)?.nombre || "—";
-              const destinoNombre = ciudades.find(c => c.ciudadID === vuelo.destinoID)?.nombre || "—";
-              const avionModelo = vuelo.avion?.modelo || "—";
+              const origenNombre = ciudades.find(c => c.CiudadID === vuelo.OrigenID)?.Nombre || "—";
+              const destinoNombre = ciudades.find(c => c.CiudadID === vuelo.DestinoID)?.Nombre || "—";
+              const avionModelo = vuelo.Avion?.Modelo || "—";
 
               return (
-                <div key={vuelo.vueloID} className="vuelo-card">
-                  <div className="vuelo-header">
-                    <div className="ruta">
-                      <span className="origen">{origenNombre}</span>
-                      <span className="flecha">→</span>
-                      <span className="destino">{destinoNombre}</span>
-                    </div>
-                    <div className="avion-info">{avionModelo}</div>
-                  </div>
+                <div key={vuelo.VueloID} className="vuelo-card">
+  <div className="vuelo-header">
+    <div className="ruta">
+      <span className="origen">{origenNombre}</span>
+      <span className="flecha">→</span>
+      <span className="destino">{destinoNombre}</span>
+    </div>
+    <div className="avion-info">{avionModelo}</div>
+  </div>
 
-                  <div className="vuelo-detalles">
-                    <div className="horario">
-                      <div className="salida">
-                        <span className="hora">{formatHora(vuelo.fechaHoraSalida)}</span>
-                        <span className="fecha">{formatFecha(vuelo.fechaHoraSalida)}</span>
-                      </div>
-                      <div className="duracion">{vuelo.duracion || "—"}</div>
-                      <div className="llegada">
-                        <span className="hora">{formatHora(vuelo.fechaHoraLlegada)}</span>
-                        <span className="fecha">{formatFecha(vuelo.fechaHoraLlegada)}</span>
-                      </div>
-                    </div>
-                  </div>
+  <div className="vuelo-detalles">
+    <div className="horario">
+      <div className="salida">
+        <span className="hora">{formatHora(vuelo.FechaHoraSalida)}</span>
+        <span className="fecha">{formatFecha(vuelo.FechaHoraSalida)}</span>
+      </div>
+      <div className="duracion">{vuelo.Duracion || "—"}</div>
+      <div className="llegada">
+        <span className="hora">{formatHora(vuelo.FechaHoraLlegada)}</span>
+        <span className="fecha">{formatFecha(vuelo.FechaHoraLlegada)}</span>
+      </div>
+    </div>
+  </div>
 
-                  <div className="vuelo-footer">
-                    <div className="precio">
-                      <span className="monto">S/ {vuelo.precio}</span>
-                      <span className="por-persona">por persona</span>
-                    </div>
-                    <button
-                      className="comprar-button"
-                      onClick={() => handleComprar(vuelo.vueloID)}
-                    >
-                      Comprar
-                    </button>
-                  </div>
-                </div>
+  <div className="vuelo-footer">
+    <div className="precio">
+      <span className="monto">S/ {vuelo.Precio}</span>
+      <span className="por-persona">por persona</span>
+    </div>
+    <button
+      className="comprar-button"
+      onClick={() => handleComprar(vuelo.VueloID)}
+    >
+      Comprar
+    </button>
+  </div>
+</div>
               );
             })}
           </div>

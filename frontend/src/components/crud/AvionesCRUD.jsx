@@ -47,9 +47,10 @@ const AvionesCRUD = () => {
   };
 
   const handleEdit = (avion) => {
-    setEditingId(avion.avionID);
-    setModelo(avion.modelo);
-    setCapacidad(avion.capacidad.toString());
+    if (!avion) return;
+    setEditingId(avion.AvionID);
+    setModelo(avion.Modelo || '');
+    setCapacidad(avion.Capacidad?.toString() || '');
   };
 
   const handleUpdate = async () => {
@@ -187,36 +188,39 @@ const AvionesCRUD = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {aviones.map((avion) => (
-                    <tr key={avion.avionID}>
-                      <td className="model-cell">
-                        <div className="model-info">
-                          <span className="model-name">{avion.modelo}</span>
-                        </div>
-                      </td>
-                      <td>
-                        <span className="capacity-badge">{avion.capacidad}</span>
-                      </td>
-                      <td>
-                        <div className="action-buttons">
-                          <button
-                            onClick={() => handleEdit(avion)}
-                            className="btn btn-edit"
-                            title="Editar avión"
-                          >
-                            ✏️ Editar
-                          </button>
-                          <button
-                            onClick={() => handleDelete(avion.avionID)}
-                            className="btn btn-delete"
-                            title="Eliminar avión"
-                          >
-                            🗑️ Eliminar
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
+                  {aviones.map((avion) => {
+                    const key = avion.AvionID ?? `${avion.Modelo}-${Math.random()}`;
+                    return (
+                      <tr key={key}>
+                        <td className="model-cell">
+                          <div className="model-info">
+                            <span className="model-name">{avion.Modelo || 'N/A'}</span>
+                          </div>
+                        </td>
+                        <td>
+                          <span className="capacity-badge">{avion.Capacidad ?? 'N/A'}</span>
+                        </td>
+                        <td>
+                          <div className="action-buttons">
+                            <button
+                              onClick={() => handleEdit(avion)}
+                              className="btn btn-edit"
+                              title="Editar avión"
+                            >
+                              ✏️ Editar
+                            </button>
+                            <button
+                              onClick={() => handleDelete(avion.AvionID)}
+                              className="btn btn-delete"
+                              title="Eliminar avión"
+                            >
+                              🗑️ Eliminar
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
             </div>

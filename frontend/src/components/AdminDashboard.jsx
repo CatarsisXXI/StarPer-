@@ -11,7 +11,6 @@ const AdminDashboard = () => {
     vuelos: 0,
     personal: 0,
     ciudades: 0,
-    asientos: 0,
     tripulaciones: 0
   });
   const [loading, setLoading] = useState(true);
@@ -37,14 +36,12 @@ const AdminDashboard = () => {
           vuelosRes,
           personalRes,
           ciudadesRes,
-          asientosRes,
           tripulacionesRes
         ] = await Promise.all([
           api.get('/Aviones'),
           api.get('/Vuelos'),
           api.get('/Personal'),
           api.get('/Ciudades'),
-          api.get('/Asientos'),
           api.get('/tripulacion-vuelo')
 
         ]);
@@ -54,7 +51,6 @@ const AdminDashboard = () => {
         console.log("Vuelos:", vuelosRes.data);
         console.log("Personal:", personalRes.data);
         console.log("Ciudades:", ciudadesRes.data);
-        console.log("Asientos:", asientosRes.data);
         console.log("Tripulaciones:", tripulacionesRes.data);
 
         setStats({
@@ -62,7 +58,6 @@ const AdminDashboard = () => {
           vuelos: getCount(vuelosRes),
           personal: getCount(personalRes),
           ciudades: getCount(ciudadesRes),
-          asientos: getCount(asientosRes),
           tripulaciones: getCount(tripulacionesRes)
         });
       } catch (error) {
@@ -156,17 +151,6 @@ const AdminDashboard = () => {
                 <p>Ciudades Disponibles</p>
               </div>
               <Link to="/ciudades" className="stat-link">Gestionar →</Link>
-            </div>
-
-            <div className="stat-card">
-              <div className="stat-icon asientos">
-                <span>💺</span>
-              </div>
-              <div className="stat-content">
-                <h3>{stats.asientos}</h3>
-                <p>Asientos Configurados</p>
-              </div>
-              <Link to="/asientos" className="stat-link">Gestionar →</Link>
             </div>
 
             <div className="stat-card">

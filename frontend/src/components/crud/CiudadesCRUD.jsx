@@ -35,9 +35,9 @@ const CiudadesCRUD = () => {
     try {
       setSubmitting(true);
       await api.post('/Ciudades', {
-        nombre: nombre.trim(),
-        codigoIATA: codigoIATA.trim(),
-        duracionEstimadahoras: parseInt(duracionHoras),
+        Nombre: nombre.trim(),
+        CodigoIATA: codigoIATA.trim(),
+        DuracionEstimadahoras: parseInt(duracionHoras),
       });
       clearForm();
       fetchCiudades();
@@ -49,10 +49,10 @@ const CiudadesCRUD = () => {
   };
 
   const handleEdit = (ciudad) => {
-    setEditingId(ciudad.ciudadID);
-    setNombre(ciudad.nombre);
-    setCodigoIATA(ciudad.codigoIATA || '');
-    setDuracionHoras(ciudad.duracionEstimadahoras.toString());
+    setEditingId(ciudad.CiudadID);
+    setNombre(ciudad.Nombre);
+    setCodigoIATA(ciudad.CodigoIATA || '');
+    setDuracionHoras(ciudad.DuracionEstimadahoras?.toString() || '');
   };
 
   const handleUpdate = async () => {
@@ -61,9 +61,9 @@ const CiudadesCRUD = () => {
     try {
       setSubmitting(true);
       await api.put(`/Ciudades/${editingId}`, {
-        nombre: nombre.trim(),
-        codigoIATA: codigoIATA.trim(),
-        duracionEstimadahoras: parseInt(duracionHoras),
+        Nombre: nombre.trim(),
+        CodigoIATA: codigoIATA.trim(),
+        DuracionEstimadahoras: parseInt(duracionHoras),
       });
       clearForm();
       fetchCiudades();
@@ -206,17 +206,17 @@ const CiudadesCRUD = () => {
                 </thead>
                 <tbody>
                   {ciudades.map((ciudad) => (
-                    <tr key={ciudad.ciudadID}>
+                    <tr key={ciudad.CiudadID}>
                       <td className="model-cell">
                         <div className="model-info">
-                          <span className="model-name">{ciudad.nombre}</span>
+                          <span className="model-name">{ciudad.Nombre}</span>
                         </div>
                       </td>
                       <td>
-                        <span className="capacity-badge">{ciudad.codigoIATA}</span>
+                        <span className="capacity-badge">{ciudad.CodigoIATA}</span>
                       </td>
                       <td>
-                        <span className="capacity-badge">{ciudad.duracionEstimadahoras} horas</span>
+                        <span className="capacity-badge">{ciudad.DuracionEstimadahoras} horas</span>
                       </td>
                       <td>
                         <div className="action-buttons">
@@ -228,7 +228,7 @@ const CiudadesCRUD = () => {
                             ✏️ Editar
                           </button>
                           <button
-                            onClick={() => handleDelete(ciudad.ciudadID)}
+                            onClick={() => handleDelete(ciudad.CiudadID)}
                             className="btn btn-delete"
                             title="Eliminar ciudad"
                           >
