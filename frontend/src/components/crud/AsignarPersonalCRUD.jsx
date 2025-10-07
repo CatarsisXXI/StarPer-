@@ -4,35 +4,56 @@ import './CRUD.css';
 
 const AsignarPersonalCRUD = () => {
   const [tripulaciones, setTripulaciones] = useState([]);
+  const [vuelos, setVuelos] = useState([]);
+  const [personal, setPersonal] = useState([]);
+  const [personalFiltrado, setPersonalFiltrado] = useState([]);
   const [vueloID, setVueloID] = useState('');
   const [personalID, setPersonalID] = useState('');
   const [puesto, setPuesto] = useState('');
   const [editingId, setEditingId] = useState(null);
-  const [vuelos, setVuelos] = useState([]);
-  const [personal, setPersonal] = useState([]);
-  const [personalFiltrado, setPersonalFiltrado] = useState([]);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
 
+  // Inicializar datos
   useEffect(() => {
     fetchTripulaciones();
     fetchVuelos();
     fetchPersonal();
   }, []);
 
+  // Filtrar personal según puesto y vuelo seleccionado
   useEffect(() => {
-    if (puesto) {
-      setPersonalFiltrado(personal.filter(persona => persona.Puesto === puesto));
-    } else {
-      setPersonalFiltrado(personal);
-    }
-  }, [puesto, personal]);
+    const fetchPersonalFiltrado = async () => {
+      if (!puesto) {
+        setPersonalFiltrado(personal);
+        return;
+      }
+      try {
+        const response = await api.get(`/Personal/available?puesto=${puesto}`);
+        let filtrado = Array.isArray(response.data) ? response.data : [];
 
-  // ✅ Fetch tripulaciones
+        // Excluir personal ya asignado al vuelo
+        if (vueloID) {
+          const asignados = tripulaciones
+            .filter(t => t.VueloID === parseInt(vueloID))
+            .map(t => t.PersonalID);
+          filtrado = filtrado.filter(p => !asignados.includes(p.PersonalID));
+        }
+
+        setPersonalFiltrado(filtrado);
+      } catch (error) {
+        console.error('Error fetching personal filtrado:', error);
+        setPersonalFiltrado([]);
+      }
+    };
+    fetchPersonalFiltrado();
+  }, [puesto, vueloID, personal, tripulaciones]);
+
+  // Fetch tripulaciones
   const fetchTripulaciones = async () => {
     try {
       setLoading(true);
-      const response = await api.get('/AsignarPersonal'); // Ajustado a la ruta relativa correcta
+      const response = await api.get('/tripulacion-vuelo');
       setTripulaciones(Array.isArray(response.data) ? response.data : []);
     } catch (error) {
       console.error('Error fetching tripulaciones:', error);
@@ -41,6 +62,7 @@ const AsignarPersonalCRUD = () => {
     }
   };
 
+  // Fetch vuelos
   const fetchVuelos = async () => {
     try {
       const response = await api.get('/Vuelos');
@@ -50,6 +72,7 @@ const AsignarPersonalCRUD = () => {
     }
   };
 
+  // Fetch todo el personal
   const fetchPersonal = async () => {
     try {
       const response = await api.get('/Personal');
@@ -59,13 +82,22 @@ const AsignarPersonalCRUD = () => {
     }
   };
 
-  // ✅ Añadir asignación
+  // Añadir asignación con validación
   const handleAdd = async () => {
     if (!vueloID || !personalID || !puesto.trim()) return;
 
+    // Verificar si ya hay un personal con ese puesto en el vuelo
+    const existePuesto = tripulaciones.some(
+      t => t.VueloID === parseInt(vueloID) && t.rolAsignado === puesto
+    );
+    if (existePuesto) {
+      alert(`Ya hay un ${puesto} asignado a este vuelo.`);
+      return;
+    }
+
     try {
       setSubmitting(true);
-      await api.post('/AsignarPersonal', {
+      await api.post('/tripulacion-vuelo', {
         vueloID: parseInt(vueloID),
         personalID: parseInt(personalID),
         rolAsignado: puesto.trim(),
@@ -79,7 +111,7 @@ const AsignarPersonalCRUD = () => {
     }
   };
 
-  // ✅ Editar asignación
+  // Editar asignación
   const handleEdit = (tripulacion) => {
     setEditingId(`${tripulacion.VueloID}-${tripulacion.PersonalID}`);
     setVueloID(tripulacion.VueloID.toString());
@@ -87,13 +119,24 @@ const AsignarPersonalCRUD = () => {
     setPuesto(tripulacion.rolAsignado);
   };
 
-  // ✅ Actualizar asignación
+  // Actualizar asignación con validación
   const handleUpdate = async () => {
     if (!vueloID || !personalID || !puesto.trim()) return;
 
+    const existePuesto = tripulaciones.some(
+      t =>
+        t.VueloID === parseInt(vueloID) &&
+        t.rolAsignado === puesto &&
+        `${t.VueloID}-${t.PersonalID}` !== editingId
+    );
+    if (existePuesto) {
+      alert(`Ya hay un ${puesto} asignado a este vuelo.`);
+      return;
+    }
+
     try {
       setSubmitting(true);
-      await api.put(`/AsignarPersonal/${vueloID}/${personalID}`, {
+      await api.put(`/tripulacion-vuelo/${vueloID}/${personalID}`, {
         vueloID: parseInt(vueloID),
         personalID: parseInt(personalID),
         rolAsignado: puesto.trim(),
@@ -107,12 +150,12 @@ const AsignarPersonalCRUD = () => {
     }
   };
 
-  // ✅ Eliminar asignación
+  // Eliminar asignación
   const handleDelete = async (vueloId, personalId) => {
     if (!window.confirm('¿Estás seguro de que deseas eliminar esta asignación de personal?')) return;
 
     try {
-      await api.delete(`/AsignarPersonal/${vueloId}/${personalId}`);
+      await api.delete(`/tripulacion-vuelo/${vueloId}/${personalId}`);
       fetchTripulaciones();
     } catch (error) {
       console.error('Error deleting tripulacion:', error);
@@ -153,25 +196,9 @@ const AsignarPersonalCRUD = () => {
                 className="form-input"
               >
                 <option value="">Seleccionar Vuelo</option>
-                {vuelos.map((vuelo) => (
-                  <option key={vuelo.VueloID} value={vuelo.VueloID}>
-                    Vuelo {vuelo.VueloID} - {vuelo.origen?.nombre} → {vuelo.destino?.nombre}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div className="form-group">
-              <label htmlFor="personalID">Personal</label>
-              <select
-                id="personalID"
-                value={personalID}
-                onChange={(e) => setPersonalID(e.target.value)}
-                className="form-input"
-              >
-                <option value="">Seleccionar Personal</option>
-                {personalFiltrado.map((persona) => (
-                  <option key={persona.PersonalID} value={persona.PersonalID}>
-                    {persona.Nombre} {persona.Apellido} - {persona.Puesto}
+                {vuelos.map(v => (
+                  <option key={v.VueloID} value={v.VueloID}>
+                    {v.Origen?.Nombre || 'Desconocido'} - {v.Destino?.Nombre || 'Desconocido'}
                   </option>
                 ))}
               </select>
@@ -188,6 +215,22 @@ const AsignarPersonalCRUD = () => {
                 <option value="Piloto">Piloto</option>
                 <option value="Copiloto">Copiloto</option>
                 <option value="Tripulante de Cabina de Pasajeros">Tripulante de Cabina de Pasajeros</option>
+              </select>
+            </div>
+            <div className="form-group">
+              <label htmlFor="personalID">Personal</label>
+              <select
+                id="personalID"
+                value={personalID}
+                onChange={(e) => setPersonalID(e.target.value)}
+                className="form-input"
+              >
+                <option value="">Seleccionar Personal</option>
+                {personalFiltrado.map(p => (
+                  <option key={p.PersonalID} value={p.PersonalID}>
+                    {p.Nombre} {p.Apellido} - {p.Puesto}
+                  </option>
+                ))}
               </select>
             </div>
           </div>
@@ -250,38 +293,36 @@ const AsignarPersonalCRUD = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {tripulaciones.map((tripulacion) => (
-                    <tr key={`${tripulacion.VueloID}-${tripulacion.PersonalID}`}>
+                  {tripulaciones.map(t => (
+                    <tr key={`${t.VueloID}-${t.PersonalID}`}>
                       <td className="model-cell">
                         <div className="model-info">
-                          <span className="model-name">Vuelo {tripulacion.VueloID}</span>
-                          <span className="model-subtitle">
-                            {tripulacion.vuelo?.origen?.nombre} → {tripulacion.vuelo?.destino?.nombre}
+                          <span className="model-name">
+                            {t.vuelo ? `${t.vuelo.Origen?.Nombre} - ${t.vuelo.Destino?.Nombre}` : `Vuelo ${t.VueloID}`}
                           </span>
                         </div>
                       </td>
                       <td className="model-cell">
                         <div className="model-info">
                           <span className="model-name">
-                            {tripulacion.personal?.Nombre} {tripulacion.personal?.Apellido}
+                            {t.personal?.Nombre} {t.personal?.Apellido}
                           </span>
-                          <span className="model-subtitle">{tripulacion.personal?.Puesto}</span>
                         </div>
                       </td>
                       <td>
-                        <span className="capacity-badge">{tripulacion.rolAsignado}</span>
+                        <span className="capacity-badge">{t.rolAsignado}</span>
                       </td>
                       <td>
                         <div className="action-buttons">
                           <button
-                            onClick={() => handleEdit(tripulacion)}
+                            onClick={() => handleEdit(t)}
                             className="btn btn-edit"
                             title="Editar asignación"
                           >
                             ✏️ Editar
                           </button>
                           <button
-                            onClick={() => handleDelete(tripulacion.VueloID, tripulacion.PersonalID)}
+                            onClick={() => handleDelete(t.VueloID, t.PersonalID)}
                             className="btn btn-delete"
                             title="Eliminar asignación"
                           >

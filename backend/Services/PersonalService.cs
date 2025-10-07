@@ -32,7 +32,6 @@ namespace StarPeru.Api.Services
                 Apellido = dto.Apellido,
                 Puesto = dto.Puesto
             };
-
             return await _personalRepository.CreateAsync(personal);
         }
 
@@ -51,6 +50,17 @@ namespace StarPeru.Api.Services
         public async Task<bool> DeleteAsync(int id)
         {
             return await _personalRepository.DeleteAsync(id);
+        }
+
+        // Filtrar por puesto
+        public async Task<IEnumerable<Personal>> GetAvailableByPuestoAsync(string puesto)
+        {
+            if (string.IsNullOrWhiteSpace(puesto)) return Enumerable.Empty<Personal>();
+
+            var allPersonal = await _personalRepository.GetAllAsync();
+            return allPersonal
+                .Where(p => !string.IsNullOrWhiteSpace(p.Puesto) &&
+                            p.Puesto.Equals(puesto.Trim(), StringComparison.OrdinalIgnoreCase));
         }
     }
 }

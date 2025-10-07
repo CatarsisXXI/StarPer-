@@ -207,6 +207,7 @@ const BusquedaVuelos = () => {
                       type="button"
                       onClick={() => handlePasajerosChange('adultos', 'incrementar')}
                     >
+                      +
                     </button>
                   </div>
                 </div>
@@ -226,6 +227,7 @@ const BusquedaVuelos = () => {
                       type="button"
                       onClick={() => handlePasajerosChange('ninos', 'incrementar')}
                     >
+                      +            
                     </button>
                   </div>
                 </div>
@@ -245,6 +247,7 @@ const BusquedaVuelos = () => {
                       type="button"
                       onClick={() => handlePasajerosChange('bebes', 'incrementar')}
                     >
+                      +
                     </button>
                   </div>
                 </div>

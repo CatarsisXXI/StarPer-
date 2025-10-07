@@ -10,5 +10,7 @@ namespace StarPeru.Api.Services.Interfaces
         Task<Personal> CreateAsync(CreatePersonalDto dto);
         Task<Personal> UpdateAsync(int id, CreatePersonalDto dto);
         Task<bool> DeleteAsync(int id);
+
+        Task<IEnumerable<Personal>> GetAvailableByPuestoAsync(string puesto);
     }
 }

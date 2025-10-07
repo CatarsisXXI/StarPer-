@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("StarPeru.Api")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e774158245082f03d0beea2963306cfcb9f90f0a")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+6f49cb56261b963f37e262968d1cd29c74fbc3b3")]
 [assembly: System.Reflection.AssemblyProductAttribute("StarPeru.Api")]
 [assembly: System.Reflection.AssemblyTitleAttribute("StarPeru.Api")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
