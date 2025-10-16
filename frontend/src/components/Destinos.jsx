@@ -44,7 +44,10 @@ const Destinos = () => {
     const imageMap = {
       'Lima': 'ciudad-lima',
       'Cusco': 'ciudad-cusco',
-      'Arequipa': 'ciudad-arequipa'
+      'Arequipa': 'ciudad-arequipa',
+      'Trujillo': 'ciudad-trujillo',
+      'Iquitos': 'ciudad-iquitos',
+      'Cajamarca': 'ciudad-cajamarca'
     };
     return imageMap[ciudadNombre] || 'ciudad-lima';
   };
@@ -54,7 +57,10 @@ const Destinos = () => {
     const featuresMap = {
       'Lima': ['Costa', 'Capital', 'Moderno'],
       'Cusco': ['Sierra', 'Histórico', 'Cultural'],
-      'Arequipa': ['Volcán', 'Colonial', 'Gastronomía']
+      'Arequipa': ['Volcán', 'Colonial', 'Gastronomía'],
+      'Trujillo': ['Arqueología', 'Colonial', 'Playas'],
+      'Iquitos': ['Selva', 'Río Amazonas', 'Biodiversidad'],
+      'Cajamarca': ['Historia', 'Baños termales', 'Carnavales']
     };
     return featuresMap[ciudadNombre] || ['Destino', 'Peruano'];
   };
@@ -236,7 +242,7 @@ const Destinos = () => {
 
                 <button
                   className="reservar-button"
-                  onClick={() => navigate('/busqueda-vuelos', { state: { destinoSeleccionado: ciudad.CiudadID } })}
+                  onClick={() => navigate('/buscar-vuelos', { state: { destinoSeleccionado: ciudad.CiudadID } })}
                 >
                   Buscar Vuelos
                 </button>

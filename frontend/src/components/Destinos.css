@@ -109,12 +109,12 @@
 
 .slide-1 {
   background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)),
-    url('https://images.unsplash.com/photo-1436491865332-7a61a109cc05?ixlib=rb-4.0.3&auto=format&fit=crop&w=2074&q=80');
+    url('https://png.pngtree.com/thumb_back/fh260/background/20230805/pngtree-the-flight-path-on-both-sides-of-the-runway-image_12972430.jpg');
 }
 
 .slide-2 {
   background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)),
-    url('https://images.unsplash.com/photo-1583337130417-3346a1be7dee?ixlib=rb-4.0.3&auto=format&fit=crop&w=2068&q=80');
+    url('https://wallpapers.com/images/hd/flight-1920-x-1200-background-j0dxqsb2jhqo2eo5.jpg');
 }
 
 .slide-3 {
@@ -124,7 +124,7 @@
 
 .slide-4 {
   background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)),
-    url('https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80');
+    url('https://wallpapers.com/images/hd/flight-8gt51n2aehbbu1mn.jpg');
 }
 
 .hero-content {
@@ -333,15 +333,27 @@
 }
 
 .ciudad-lima {
-  background-image: url('https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80');
+  background-image: url('https://www.peru.travel/Contenido/Noticia/Imagen/es/1970/1.0/Principal/lima-desktop.jpg');
 }
 
 .ciudad-cusco {
-  background-image: url('https://images.unsplash.com/photo-1583337130417-3346a1be7dee?ixlib=rb-4.0.3&auto=format&fit=crop&w=2068&q=80');
+  background-image: url('https://media.tacdn.com/media/attractions-splice-spp-674x446/06/f2/64/89.jpg');
 }
 
 .ciudad-arequipa {
-  background-image: url('https://images.unsplash.com/photo-1542296332-2e4473faf563?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80');
+  background-image: url('https://imagescdn.rimac.com/blt998c1b53715fc60d/6814eacfdaa0a3296744b8bb/la-mejor-epoca-para-viajar-a-arequipa-guia-practica.jpg');
+}
+
+.ciudad-trujillo {
+  background-image: url('https://blog.properati.com.pe/wp-content/uploads/2022/12/trujillo-guia-ciudad-peru-properati.jpg');
+}
+
+.ciudad-iquitos {
+  background-image: url('https://media.staticontent.com/media/pictures/0fbaa93c-5f5a-4356-a1ba-49e471e5e041');
+}
+
+.ciudad-cajamarca {
+  background-image: url('https://upload.wikimedia.org/wikipedia/commons/c/ca/Plaza_de_cajamarca.jpg');
 }
 
 .ciudad-card-body {
