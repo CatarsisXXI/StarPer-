@@ -36,6 +36,20 @@ namespace StarPeru.Api.Data
             modelBuilder.Entity<VueloTripulacion>().ToTable("VueloTripulacion");
             modelBuilder.Entity<Boleto>().ToTable("Boletos");
 
+            // Configurar eliminación en cascada para asientos cuando se elimina un vuelo
+            modelBuilder.Entity<Asiento>()
+                .HasOne(a => a.Vuelo)
+                .WithMany(v => v.Asientos)
+                .HasForeignKey(a => a.VueloID)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // Configurar eliminación en cascada para boletos cuando se elimina un asiento
+            modelBuilder.Entity<Boleto>()
+                .HasOne(b => b.Asiento)
+                .WithOne(a => a.Boleto)
+                .HasForeignKey<Boleto>(b => b.AsientoID)
+                .OnDelete(DeleteBehavior.Cascade);
+
             // Seed data removed to avoid conflicts with database.sql
         }
     }

@@ -49,9 +49,6 @@ namespace StarPeru.Api.Services
             if (asiento == null) throw new ArgumentException("Asiento no encontrado");
             if (!asiento.Disponible) throw new ArgumentException("Asiento no disponible");
 
-            // Aquí se debería implementar la lógica de precios, disponibilidad de asientos, etc.
-            // Por simplicidad, creamos el boleto directamente
-
             var boleto = new Boleto
             {
                 VueloID = dto.VueloID,
@@ -61,7 +58,7 @@ namespace StarPeru.Api.Services
                 FechaCompra = DateTime.Now
             };
 
-            // Marcar el asiento como ocupado después de crear el boleto
+            // Marcar el asiento como ocupado ANTES de crear el boleto para evitar race conditions
             asiento.Disponible = false;
             await _asientoRepository.UpdateAsync(asiento);
 

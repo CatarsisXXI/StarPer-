@@ -3,6 +3,7 @@ using StarPeru.Api.Models;
 using StarPeru.Api.Repositories.Interfaces;
 using StarPeru.Api.Services.Interfaces;
 using StarPeru.Api.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace StarPeru.Api.Services
 {
@@ -12,6 +13,7 @@ namespace StarPeru.Api.Services
         private readonly IAvionRepository _avionRepository;
         private readonly ICiudadRepository _ciudadRepository;
         private readonly IPersonalRepository _personalRepository;
+        private readonly IAsientoRepository _asientoRepository;
         private readonly StarPeruContext _context;
 
         public VueloService(
@@ -19,12 +21,14 @@ namespace StarPeru.Api.Services
             IAvionRepository avionRepository,
             ICiudadRepository ciudadRepository,
             IPersonalRepository personalRepository,
+            IAsientoRepository asientoRepository,
             StarPeruContext context)
         {
             _vueloRepository = vueloRepository;
             _avionRepository = avionRepository;
             _ciudadRepository = ciudadRepository;
             _personalRepository = personalRepository;
+            _asientoRepository = asientoRepository;
             _context = context;
         }
 
@@ -86,6 +90,17 @@ namespace StarPeru.Api.Services
 
         public async Task<bool> DeleteAsync(int id)
         {
+            // Verificar si hay boletos vendidos para este vuelo
+            var vuelo = await _vueloRepository.GetByIdAsync(id);
+            if (vuelo == null) return false;
+
+            var boletosVendidos = await _context.Boletos.AnyAsync(b => b.VueloID == id);
+            if (boletosVendidos)
+            {
+                throw new InvalidOperationException("No se puede eliminar el vuelo porque tiene boletos vendidos.");
+            }
+
+            // Eliminar el vuelo (los asientos se eliminarán automáticamente por cascada)
             return await _vueloRepository.DeleteAsync(id);
         }
 

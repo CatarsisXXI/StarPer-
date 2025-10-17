@@ -28,6 +28,31 @@ const MisBoletos = () => {
     }
   }, [user]);
 
+  const visualizarBoleto = (boleto) => {
+    const doc = new jsPDF();
+
+    doc.setFontSize(16);
+    doc.text("STARPERU - Boleto de Pasajero", 20, 20);
+
+    doc.setFontSize(12);
+    doc.text(`Código de boleto: ${boleto.BoletoID}`, 20, 40);
+    doc.text(`Pasajero: ${user.nombre} ${user.apellido || ''}`, 20, 50);
+    doc.text(`Vuelo: ${boleto.Vuelo?.Origen?.Nombre} → ${boleto.Vuelo?.Destino?.Nombre}`, 20, 60);
+    doc.text(`Fecha salida: ${new Date(boleto.Vuelo?.FechaHoraSalida).toLocaleString()}`, 20, 70);
+    doc.text(`Fecha llegada: ${new Date(boleto.Vuelo?.FechaHoraLlegada).toLocaleString()}`, 20, 80);
+    doc.text(`Asiento: ${boleto.Asiento?.NumeroAsiento}`, 20, 90);
+    doc.text(`Precio: S/ ${boleto.Precio}`, 20, 100);
+    doc.text(`Fecha compra: ${new Date(boleto.FechaCompra).toLocaleString()}`, 20, 110);
+
+    doc.text("----------------------------", 20, 130);
+    doc.text("¡Gracias por volar con StarPeru!", 20, 140);
+
+    // Abrir en nueva ventana en lugar de descargar
+    const pdfBlob = doc.output('blob');
+    const pdfUrl = URL.createObjectURL(pdfBlob);
+    window.open(pdfUrl, '_blank');
+  };
+
   const generarPDF = (boleto) => {
     const doc = new jsPDF();
 
@@ -84,6 +109,12 @@ const MisBoletos = () => {
               </div>
 
               <div className="boleto-acciones">
+                <button
+                  className="btn-visualizar"
+                  onClick={() => visualizarBoleto(boleto)}
+                >
+                  👁️ Visualizar Boleto
+                </button>
                 <button
                   className="btn-descargar"
                   onClick={() => generarPDF(boleto)}
