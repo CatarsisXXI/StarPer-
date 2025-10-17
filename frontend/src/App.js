@@ -15,6 +15,7 @@ import PersonalCRUD from './components/crud/PersonalCRUD';
 import CiudadesCRUD from './components/crud/CiudadesCRUD';
 import AsignarPersonalCRUD from './components/crud/AsignarPersonalCRUD';
 import ComprarBoleto from './components/ComprarBoleto';
+import MisBoletos from './components/MisBoletos';
  import './App.css';
  
  function App() {
@@ -34,6 +35,11 @@ import ComprarBoleto from './components/ComprarBoleto';
           <Route path="/comprar/:vueloId" element={
             <PrivateRoute>
               <ComprarBoleto />
+            </PrivateRoute>
+          } />
+          <Route path="/mis-boletos" element={
+            <PrivateRoute>
+              <MisBoletos />
             </PrivateRoute>
           } />
           <Route path="/login" element={<Login />} />

@@ -36,7 +36,8 @@ namespace StarPeru.Api.Services
                     Email = admin.Email,
                     Role = "Admin",
                     Nombre = admin.Nombre,
-                    Apellido = admin.Apellido
+                    Apellido = admin.Apellido,
+                    PasajeroID = null
                 };
                 return new LoginResponseDto { Token = token, User = userDto, Success = true };
             }
@@ -51,11 +52,12 @@ namespace StarPeru.Api.Services
                     Email = pasajero.Email,
                     Role = "Pasajero",
                     Nombre = pasajero.Nombre,
-                    Apellido = pasajero.Apellido
+                    Apellido = pasajero.Apellido,
+                    PasajeroID = pasajero.PasajeroID
                 };
                 return new LoginResponseDto { Token = token, User = userDto, Success = true };
              }
- 
+
              throw new UnauthorizedAccessException("Invalid credentials");
          }
 
@@ -87,7 +89,8 @@ namespace StarPeru.Api.Services
                 Email = pasajero.Email,
                 Role = "Pasajero",
                 Nombre = pasajero.Nombre,
-                Apellido = pasajero.Apellido
+                Apellido = pasajero.Apellido,
+                PasajeroID = pasajero.PasajeroID
             };
 
             return new LoginResponseDto { Token = token, User = userDto, Success = true, Message = "Registration successful" };

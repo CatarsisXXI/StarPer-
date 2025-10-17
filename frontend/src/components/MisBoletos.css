@@ -1,0 +1,181 @@
+.mis-boletos-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: 'Arial', sans-serif;
+}
+
+.mis-boletos-container h1 {
+  color: #1a365d;
+  text-align: center;
+  margin-bottom: 10px;
+  font-size: 2.5rem;
+}
+
+.subtitle {
+  text-align: center;
+  color: #6b7280;
+  margin-bottom: 30px;
+  font-size: 1.1rem;
+}
+
+.loading, .error {
+  text-align: center;
+  padding: 50px;
+  font-size: 1.2rem;
+}
+
+.error {
+  color: #dc3545;
+}
+
+.no-boletos {
+  text-align: center;
+  padding: 50px;
+  background: #f8f9fa;
+  border-radius: 10px;
+  margin: 20px 0;
+}
+
+.no-boletos h3 {
+  color: #1a365d;
+  margin-bottom: 10px;
+}
+
+.no-boletos p {
+  color: #6b7280;
+}
+
+.boletos-list {
+  display: grid;
+  gap: 20px;
+}
+
+.boleto-card {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  border: 1px solid #e2e8f0;
+}
+
+.boleto-header {
+  background: linear-gradient(135deg, #1a365d, #2d3748);
+  color: white;
+  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.boleto-header h3 {
+  margin: 0;
+  font-size: 1.3rem;
+}
+
+.fecha-compra {
+  font-size: 0.9rem;
+  opacity: 0.9;
+}
+
+.boleto-content {
+  padding: 20px;
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 20px;
+  align-items: start;
+}
+
+.vuelo-info {
+  border-right: 1px solid #e2e8f0;
+  padding-right: 20px;
+}
+
+.ruta {
+  display: flex;
+  align-items: center;
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-bottom: 15px;
+  color: #1a365d;
+}
+
+.origen, .destino {
+  padding: 5px 10px;
+  background: #edf2f7;
+  border-radius: 5px;
+}
+
+.flecha {
+  margin: 0 10px;
+  color: #4a5568;
+}
+
+.fecha-hora p {
+  margin: 5px 0;
+  color: #4a5568;
+  font-size: 0.9rem;
+}
+
+.asiento-info, .precio-info {
+  text-align: center;
+}
+
+.asiento-info h4, .precio-info h4 {
+  color: #1a365d;
+  margin-bottom: 10px;
+  font-size: 1rem;
+}
+
+.asiento-info p, .precio-info p {
+  margin: 5px 0;
+  color: #4a5568;
+}
+
+.precio {
+  font-size: 1.3rem;
+  font-weight: bold;
+  color: #1a365d;
+}
+
+.boleto-actions {
+  padding: 20px;
+  background: #f8f9fa;
+  text-align: center;
+}
+
+.btn-imprimir {
+  background: #1a365d;
+  color: white;
+  border: none;
+  padding: 12px 25px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.btn-imprimir:hover {
+  background: #2d3748;
+  transform: translateY(-2px);
+}
+
+@media (max-width: 768px) {
+  .boleto-content {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+
+  .vuelo-info {
+    border-right: none;
+    border-bottom: 1px solid #e2e8f0;
+    padding-bottom: 15px;
+  }
+
+  .boleto-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+}

@@ -2,6 +2,7 @@ using StarPeru.Api.DTOs;
 using StarPeru.Api.Models;
 using StarPeru.Api.Repositories.Interfaces;
 using StarPeru.Api.Services.Interfaces;
+using StarPeru.Api.Data;
 
 namespace StarPeru.Api.Services
 {
@@ -11,17 +12,20 @@ namespace StarPeru.Api.Services
         private readonly IAvionRepository _avionRepository;
         private readonly ICiudadRepository _ciudadRepository;
         private readonly IPersonalRepository _personalRepository;
+        private readonly StarPeruContext _context;
 
         public VueloService(
             IVueloRepository vueloRepository,
             IAvionRepository avionRepository,
             ICiudadRepository ciudadRepository,
-            IPersonalRepository personalRepository)
+            IPersonalRepository personalRepository,
+            StarPeruContext context)
         {
             _vueloRepository = vueloRepository;
             _avionRepository = avionRepository;
             _ciudadRepository = ciudadRepository;
             _personalRepository = personalRepository;
+            _context = context;
         }
 
         public async Task<IEnumerable<Vuelo>> GetAllAsync()
@@ -57,7 +61,12 @@ namespace StarPeru.Api.Services
                 Precio = dto.Precio
             };
 
-            return await _vueloRepository.CreateAsync(vuelo);
+            var vueloCreado = await _vueloRepository.CreateAsync(vuelo);
+
+            // Crear asientos automáticamente basados en la capacidad del avión
+            await CrearAsientosParaVuelo(vueloCreado.VueloID, avion.Capacidad);
+
+            return vueloCreado;
         }
 
         public async Task<Vuelo> UpdateAsync(int id, CreateVueloDto dto)
@@ -97,6 +106,27 @@ namespace StarPeru.Api.Services
             // Aquí se debería implementar la lógica para asignar tripulación
             // Por simplicidad, asumimos que se asigna correctamente
             return true;
+        }
+
+        private async Task CrearAsientosParaVuelo(int vueloId, int capacidad)
+        {
+            // Crear asientos numerados del 1A hasta la capacidad
+            // Para un avión típico, podríamos tener filas y columnas
+            // Por simplicidad, creamos asientos numerados secuencialmente
+
+            for (int i = 1; i <= capacidad; i++)
+            {
+                var asiento = new Asiento
+                {
+                    VueloID = vueloId,
+                    NumeroAsiento = i.ToString(),
+                    Disponible = true
+                };
+
+                await _context.Asientos.AddAsync(asiento);
+            }
+
+            await _context.SaveChangesAsync();
         }
     }
 }

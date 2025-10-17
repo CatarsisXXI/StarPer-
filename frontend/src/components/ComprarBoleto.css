@@ -1,124 +1,324 @@
 .comprar-container {
-  max-width: 900px;
-  margin: 40px auto;
-  background: #fff;
-  border-radius: 16px;
-  padding: 30px 40px;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
-  font-family: "Poppins", sans-serif;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: 'Arial', sans-serif;
 }
 
-/* ✅ Título principal */
-.comprar-container .titulo-compra {
+.titulo-compra {
+  color: #1a365d;
   text-align: center;
-  color: #1a237e;
-  font-weight: 600;
-  margin-bottom: 25px;
+  margin-bottom: 30px;
+  font-size: 2rem;
 }
 
-/* ✅ Tarjetas (detalles y pasajeros) */
-.comprar-container .card-vuelo,
-.comprar-container .card-pasajeros {
-  background: #f9fafc;
-  border: 1px solid #e0e0e0;
+.loading, .error {
+  text-align: center;
+  padding: 50px;
+  font-size: 1.2rem;
+}
+
+.error {
+  color: #dc3545;
+}
+
+.card-vuelo, .card-pasajeros {
+  background: white;
   border-radius: 12px;
-  padding: 20px 25px;
-  margin-bottom: 25px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  margin-bottom: 20px;
+  border: 1px solid #e2e8f0;
 }
 
-.comprar-container .card-vuelo h3,
-.comprar-container .card-pasajeros h3 {
-  color: #0d47a1;
-  margin-bottom: 10px;
+.card-vuelo h3, .card-pasajeros h3 {
+  color: #1a365d;
+  margin-bottom: 15px;
+  font-size: 1.3rem;
 }
 
-/* ✅ Formulario de pasajeros */
-.comprar-container .pasajero-form {
-  border-top: 1px dashed #ccc;
-  padding-top: 15px;
-  margin-top: 15px;
+.card-vuelo p {
+  margin: 8px 0;
+  color: #4a5568;
 }
 
-.comprar-container .input-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-bottom: 10px;
-}
-
-.comprar-container input,
-.comprar-container select {
-  flex: 1;
-  min-width: 150px;
-  padding: 8px 10px;
+.pasajero-form {
+  background: #f8f9fa;
   border-radius: 8px;
-  border: 1px solid #ccc;
-  font-size: 14px;
-  background-color: #fff;
+  padding: 15px;
+  margin-bottom: 15px;
+  border: 1px solid #e2e8f0;
 }
 
-.comprar-container input:focus,
-.comprar-container select:focus {
-  border-color: #1976d2;
+.pasajero-form h4 {
+  color: #1a365d;
+  margin-bottom: 10px;
+  font-size: 1.1rem;
+}
+
+.input-row {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 10px;
+}
+
+.input-row input, .input-row select {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 1rem;
+}
+
+.input-row input:focus, .input-row select:focus {
   outline: none;
-  box-shadow: 0 0 4px rgba(25, 118, 210, 0.3);
+  border-color: #1a365d;
 }
 
-/* ✅ Sección total */
-.comprar-container .total-container {
+.total-container {
+  background: #e6fffa;
+  border: 1px solid #68d391;
+  border-radius: 8px;
+  padding: 20px;
   text-align: center;
-  font-size: 18px;
-  margin: 20px 0;
+  margin-bottom: 20px;
 }
 
-.comprar-container .precio-total {
-  color: #1b5e20;
+.total-container h3 {
+  color: #1a365d;
+  margin-bottom: 10px;
+}
+
+.precio-total {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #1a365d;
+}
+
+.acciones {
+  display: flex;
+  justify-content: space-between;
+  gap: 15px;
+  margin-top: 30px;
+}
+
+.btn-volver, .btn-confirmar, .btn-siguiente {
+  padding: 12px 25px;
+  border-radius: 8px;
   font-weight: 600;
-  font-size: 22px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  flex: 1;
 }
 
-/* ✅ Botones */
-.comprar-container .acciones {
+.btn-volver {
+  background: #6b7280;
+  color: white;
+  border: none;
+}
+
+.btn-volver:hover {
+  background: #4a5568;
+}
+
+.btn-confirmar, .btn-siguiente {
+  background: #1a365d;
+  color: white;
+  border: none;
+}
+
+.btn-confirmar:hover, .btn-siguiente:hover {
+  background: #2d3748;
+}
+
+.btn-confirmar:disabled, .btn-siguiente:disabled {
+  background: #a0aec0;
+  cursor: not-allowed;
+}
+
+/* Indicador de pasos */
+.pasos-indicador {
   display: flex;
   justify-content: center;
-  gap: 12px;
-  margin-top: 25px;
+  align-items: center;
+  margin-bottom: 30px;
+  position: relative;
 }
 
-.comprar-container .btn-confirmar,
-.comprar-container .btn-volver {
-  padding: 10px 20px;
-  border-radius: 10px;
-  border: none;
+.pasos-indicador::before {
+  content: '';
+  position: absolute;
+  top: 20px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: #e2e8f0;
+  z-index: 1;
+}
+
+.paso {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  z-index: 2;
+  background: white;
+  padding: 0 20px;
+}
+
+.paso-numero {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 1.1rem;
+  margin-bottom: 5px;
+  border: 2px solid #e2e8f0;
+  background: white;
+  color: #6b7280;
+  transition: all 0.3s ease;
+}
+
+.paso.activo .paso-numero {
+  background: #1a365d;
+  color: white;
+  border-color: #1a365d;
+}
+
+.paso.completado .paso-numero {
+  background: #68d391;
+  color: white;
+  border-color: #68d391;
+}
+
+.paso-texto {
+  font-size: 0.9rem;
+  color: #6b7280;
   font-weight: 500;
-  cursor: pointer;
-  transition: 0.3s;
-  font-size: 15px;
 }
 
-.comprar-container .btn-confirmar {
-  background: #1565c0;
+.paso.activo .paso-texto {
+  color: #1a365d;
+  font-weight: 600;
+}
+
+.paso.completado .paso-texto {
+  color: #68d391;
+}
+
+/* Confirmación de compra */
+.confirmacion-compra {
+  text-align: center;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 40px;
+  border: 1px solid #e2e8f0;
+}
+
+.confirmacion-icon {
+  font-size: 4rem;
+  margin-bottom: 20px;
+}
+
+.confirmacion-compra h3 {
+  color: #1a365d;
+  margin-bottom: 15px;
+  font-size: 1.8rem;
+}
+
+.confirmacion-compra p {
+  color: #6b7280;
+  margin-bottom: 20px;
+  font-size: 1.1rem;
+}
+
+.detalles-compra {
+  background: #f8f9fa;
+  border-radius: 8px;
+  padding: 20px;
+  margin: 20px 0;
+  text-align: left;
+}
+
+.detalles-compra h4 {
+  color: #1a365d;
+  margin-bottom: 15px;
+  font-size: 1.2rem;
+}
+
+.detalles-compra p {
+  margin: 8px 0;
+  color: #4a5568;
+}
+
+.acciones-confirmacion {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  margin-top: 30px;
+}
+
+.btn-descargar, .btn-mis-boletos {
+  padding: 12px 25px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: none;
+}
+
+.btn-descargar {
+  background: #1a365d;
   color: white;
 }
 
-.comprar-container .btn-confirmar:hover {
-  background: #0d47a1;
+.btn-descargar:hover {
+  background: #2d3748;
 }
 
-.comprar-container .btn-volver {
-  background: #e0e0e0;
-  color: #333;
+.btn-mis-boletos {
+  background: #68d391;
+  color: white;
 }
 
-.comprar-container .btn-volver:hover {
-  background: #bdbdbd;
+.btn-mis-boletos:hover {
+  background: #4a9b6a;
 }
 
-/* ✅ Mensajes de carga o error */
-.comprar-container .loading,
-.comprar-container .error {
-  text-align: center;
-  color: #444;
-  font-size: 16px;
-  margin-top: 30px;
+@media (max-width: 768px) {
+  .input-row {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .acciones {
+    flex-direction: column;
+  }
+
+  .btn-volver, .btn-confirmar, .btn-siguiente {
+    width: 100%;
+  }
+
+  .pasos-indicador {
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .pasos-indicador::before {
+    display: none;
+  }
+
+  .acciones-confirmacion {
+    flex-direction: column;
+  }
+
+  .btn-descargar, .btn-mis-boletos {
+    width: 100%;
+  }
 }

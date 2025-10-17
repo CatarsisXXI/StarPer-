@@ -89,6 +89,12 @@ const Navbar = () => {
                 >
                   Buscar Vuelos
                 </Link>
+                <Link
+                  to="/mis-boletos"
+                  className={`nav-link ${isActiveLink('/mis-boletos') ? 'active' : ''}`}
+                >
+                  Mis Boletos
+                </Link>
                 <div className="user-section">
                   <span className="user-greeting">Hola, {user.nombre}</span>
                   <button onClick={handleLogout} className="btn btn-outline btn-sm">
@@ -144,7 +150,7 @@ const Navbar = () => {
                 Dashboard
               </Link>
               <div className="mobile-nav-section">
-                <h4>Gestión</h4>     
+                <h4>Gestión</h4>
               <Link to="/aviones" className="mobile-nav-link" onClick={closeMobileMenu}>Aviones</Link>
               <Link to="/vuelos" className="mobile-nav-link" onClick={closeMobileMenu}>Vuelos</Link>
               <Link to="/personal" className="mobile-nav-link" onClick={closeMobileMenu}>Personal</Link>
@@ -165,6 +171,9 @@ const Navbar = () => {
               </Link>
               <Link to="/buscar-vuelos" className="mobile-nav-link" onClick={closeMobileMenu}>
                 Buscar Vuelos
+              </Link>
+              <Link to="/mis-boletos" className="mobile-nav-link" onClick={closeMobileMenu}>
+                Mis Boletos
               </Link>
               <div className="mobile-user-section">
                 <span className="mobile-user-greeting">Hola, {user.nombre}</span>
