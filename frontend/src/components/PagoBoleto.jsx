@@ -8,59 +8,71 @@ const PagoBoleto = ({ total, onPagoCompletado, onVolver }) => {
     fechaExpiracion: '',
     cvv: '',
     nombreTitular: '',
-    // Para Yape/Plin
-    numeroTelefono: '',
-    // Para transferencia
-    numeroCuenta: '',
-    banco: ''
+    email: '',
+    telefono: ''
   });
-  const [procesandoPago, setProcesandoPago] = useState(false);
+  const [procesando, setProcesando] = useState(false);
+  const [error, setError] = useState('');
 
-  const handleInputChange = (field, value) => {
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
     setDatosPago(prev => ({
       ...prev,
-      [field]: value
+      [name]: value
     }));
   };
 
-  const handlePago = async () => {
+  const validarDatosPago = () => {
     if (!metodoPago) {
-      alert('Por favor selecciona un método de pago');
-      return;
+      setError('Selecciona un método de pago');
+      return false;
     }
 
-    // Validar campos según método de pago
     if (metodoPago === 'tarjeta') {
-      if (!datosPago.numeroTarjeta || !datosPago.fechaExpiracion || !datosPago.cvv || !datosPago.nombreTitular) {
-        alert('Por favor completa todos los campos de la tarjeta');
-        return;
+      const { numeroTarjeta, fechaExpiracion, cvv, nombreTitular } = datosPago;
+      if (!numeroTarjeta || !fechaExpiracion || !cvv || !nombreTitular) {
+        setError('Completa todos los campos de la tarjeta');
+        return false;
       }
-    } else if (metodoPago === 'yape' || metodoPago === 'plin') {
-      if (!datosPago.numeroTelefono) {
-        alert('Por favor ingresa tu número de teléfono');
-        return;
+      if (numeroTarjeta.replace(/\s/g, '').length !== 16) {
+        setError('El número de tarjeta debe tener 16 dígitos');
+        return false;
       }
-    } else if (metodoPago === 'transferencia') {
-      if (!datosPago.numeroCuenta || !datosPago.banco) {
-        alert('Por favor completa los datos de la cuenta bancaria');
-        return;
+      if (cvv.length !== 3) {
+        setError('El CVV debe tener 3 dígitos');
+        return false;
       }
     }
 
-    setProcesandoPago(true);
-
-    // Simular procesamiento de pago
-    setTimeout(() => {
-      setProcesandoPago(false);
-      onPagoCompletado({
-        metodo: metodoPago,
-        datos: datosPago,
-        fechaPago: new Date().toISOString()
-      });
-    }, 2000);
+    return true;
   };
 
-  const formatCardNumber = (value) => {
+  const handlePago = async () => {
+    if (!validarDatosPago()) return;
+
+    setProcesando(true);
+    setError('');
+
+    try {
+      // Simular procesamiento de pago
+      await new Promise(resolve => setTimeout(resolve, 2000));
+
+      // En un escenario real, aquí se integraría con un gateway de pagos
+      // Por ahora, simulamos un pago exitoso
+      onPagoCompletado({
+        metodoPago,
+        datosPago,
+        fechaPago: new Date(),
+        estado: 'completado'
+      });
+    } catch (err) {
+      setError('Error al procesar el pago. Inténtalo de nuevo.');
+    } finally {
+      setProcesando(false);
+    }
+  };
+
+  const formatearNumeroTarjeta = (value) => {
     const v = value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
     const matches = v.match(/\d{4,16}/g);
     const match = matches && matches[0] || '';
@@ -75,218 +87,161 @@ const PagoBoleto = ({ total, onPagoCompletado, onVolver }) => {
     }
   };
 
-  const formatExpiry = (value) => {
-    const v = value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
-    if (v.length >= 2) {
-      return v.substring(0, 2) + '/' + v.substring(2, 4);
-    }
-    return v;
+  const handleNumeroTarjetaChange = (e) => {
+    const formatted = formatearNumeroTarjeta(e.target.value);
+    setDatosPago(prev => ({
+      ...prev,
+      numeroTarjeta: formatted
+    }));
   };
 
   return (
-    <div className="pago-container">
+    <div className="pago-boleto">
       <h3>Información de Pago</h3>
 
-      <div className="total-pago">
-        <h4>Total a pagar:</h4>
-        <p className="monto-total">S/ {total.toFixed(2)}</p>
+      <div className="resumen-pago">
+        <h4>Resumen de la compra</h4>
+        <div className="total-pago">
+          <span>Total a pagar:</span>
+          <span className="monto">S/ {total.toFixed(2)}</span>
+        </div>
       </div>
 
-      <div className="metodo-pago-section">
-        <h4>Selecciona método de pago</h4>
-        <div className="metodos-pago">
-          <label className="metodo-option">
+      <div className="metodo-pago">
+        <h4>Método de pago</h4>
+        <div className="opciones-pago">
+          <label className="opcion-pago">
             <input
               type="radio"
+              name="metodoPago"
               value="tarjeta"
               checked={metodoPago === 'tarjeta'}
               onChange={(e) => setMetodoPago(e.target.value)}
             />
-            <div className="metodo-content">
-              <span className="metodo-icon">💳</span>
-              <span>Tarjeta de Crédito/Débito</span>
-            </div>
+            <span className="radio-custom"></span>
+            Tarjeta de Crédito/Débito
           </label>
-
-          <label className="metodo-option">
+          <label className="opcion-pago">
             <input
               type="radio"
+              name="metodoPago"
               value="yape"
               checked={metodoPago === 'yape'}
               onChange={(e) => setMetodoPago(e.target.value)}
             />
-            <div className="metodo-content">
-              <span className="metodo-icon">📱</span>
-              <span>Yape</span>
-            </div>
+            <span className="radio-custom"></span>
+            Yape
           </label>
-
-          <label className="metodo-option">
+          <label className="opcion-pago">
             <input
               type="radio"
+              name="metodoPago"
               value="plin"
               checked={metodoPago === 'plin'}
               onChange={(e) => setMetodoPago(e.target.value)}
             />
-            <div className="metodo-content">
-              <span className="metodo-icon">📱</span>
-              <span>Plin</span>
-            </div>
-          </label>
-
-          <label className="metodo-option">
-            <input
-              type="radio"
-              value="transferencia"
-              checked={metodoPago === 'transferencia'}
-              onChange={(e) => setMetodoPago(e.target.value)}
-            />
-            <div className="metodo-content">
-              <span className="metodo-icon">🏦</span>
-              <span>Transferencia Bancaria</span>
-            </div>
+            <span className="radio-custom"></span>
+            Plin
           </label>
         </div>
       </div>
 
-      {/* Formulario de Tarjeta */}
       {metodoPago === 'tarjeta' && (
-        <div className="formulario-pago">
-          <div className="form-row">
-            <div className="form-group">
-              <label>Número de tarjeta</label>
-              <input
-                type="text"
-                placeholder="1234 5678 9012 3456"
-                value={datosPago.numeroTarjeta}
-                onChange={(e) => handleInputChange('numeroTarjeta', formatCardNumber(e.target.value))}
-                maxLength="19"
-              />
-            </div>
+        <div className="formulario-tarjeta">
+          <div className="campo-grupo">
+            <label>Número de tarjeta</label>
+            <input
+              type="text"
+              name="numeroTarjeta"
+              value={datosPago.numeroTarjeta}
+              onChange={handleNumeroTarjetaChange}
+              placeholder="1234 5678 9012 3456"
+              maxLength="19"
+            />
           </div>
 
-          <div className="form-row">
-            <div className="form-group">
+          <div className="campo-fila">
+            <div className="campo-grupo">
               <label>Fecha de expiración</label>
               <input
                 type="text"
-                placeholder="MM/YY"
+                name="fechaExpiracion"
                 value={datosPago.fechaExpiracion}
-                onChange={(e) => handleInputChange('fechaExpiracion', formatExpiry(e.target.value))}
+                onChange={handleInputChange}
+                placeholder="MM/AA"
                 maxLength="5"
               />
             </div>
-            <div className="form-group">
+            <div className="campo-grupo">
               <label>CVV</label>
               <input
                 type="text"
-                placeholder="123"
+                name="cvv"
                 value={datosPago.cvv}
-                onChange={(e) => handleInputChange('cvv', e.target.value.replace(/[^0-9]/g, ''))}
-                maxLength="4"
+                onChange={handleInputChange}
+                placeholder="123"
+                maxLength="3"
               />
             </div>
           </div>
 
-          <div className="form-row">
-            <div className="form-group">
-              <label>Nombre del titular</label>
-              <input
-                type="text"
-                placeholder="Como aparece en la tarjeta"
-                value={datosPago.nombreTitular}
-                onChange={(e) => handleInputChange('nombreTitular', e.target.value)}
-              />
-            </div>
+          <div className="campo-grupo">
+            <label>Nombre del titular</label>
+            <input
+              type="text"
+              name="nombreTitular"
+              value={datosPago.nombreTitular}
+              onChange={handleInputChange}
+              placeholder="Como aparece en la tarjeta"
+            />
           </div>
         </div>
       )}
 
-      {/* Formulario Yape/Plin */}
       {(metodoPago === 'yape' || metodoPago === 'plin') && (
-        <div className="formulario-pago">
-          <div className="metodo-info">
-            <div className="qr-placeholder">
-              <div className="qr-code">
-                <span className="metodo-icon-large">{metodoPago === 'yape' ? '📱' : '📱'}</span>
-                <p>Escanea el código QR con tu app {metodoPago === 'yape' ? 'Yape' : 'Plin'}</p>
-              </div>
-            </div>
+        <div className="formulario-movil">
+          <div className="campo-grupo">
+            <label>Teléfono</label>
+            <input
+              type="tel"
+              name="telefono"
+              value={datosPago.telefono}
+              onChange={handleInputChange}
+              placeholder="9XXXXXXXX"
+            />
           </div>
-
-          <div className="form-row">
-            <div className="form-group">
-              <label>Número de teléfono</label>
-              <input
-                type="tel"
-                placeholder="9XXXXXXXX"
-                value={datosPago.numeroTelefono}
-                onChange={(e) => handleInputChange('numeroTelefono', e.target.value.replace(/[^0-9]/g, ''))}
-                maxLength="9"
-              />
-            </div>
+          <div className="campo-grupo">
+            <label>Email</label>
+            <input
+              type="email"
+              name="email"
+              value={datosPago.email}
+              onChange={handleInputChange}
+              placeholder="tu@email.com"
+            />
           </div>
-        </div>
-      )}
-
-      {/* Formulario Transferencia */}
-      {metodoPago === 'transferencia' && (
-        <div className="formulario-pago">
-          <div className="transferencia-info">
-            <div className="cuenta-info">
-              <h5>Datos de la cuenta de Star Perú:</h5>
-              <p><strong>Banco:</strong> BCP</p>
-              <p><strong>Número de cuenta:</strong> 123-456789-012</p>
-              <p><strong>CCI:</strong> 00212300456789012</p>
-              <p><strong>Titular:</strong> Star Perú Airlines S.A.</p>
-            </div>
-          </div>
-
-          <div className="form-row">
-            <div className="form-group">
-              <label>Tu número de cuenta</label>
-              <input
-                type="text"
-                placeholder="Número de cuenta desde donde transfieres"
-                value={datosPago.numeroCuenta}
-                onChange={(e) => handleInputChange('numeroCuenta', e.target.value)}
-              />
-            </div>
-          </div>
-
-          <div className="form-row">
-            <div className="form-group">
-              <label>Banco</label>
-              <select
-                value={datosPago.banco}
-                onChange={(e) => handleInputChange('banco', e.target.value)}
-              >
-                <option value="">Selecciona tu banco</option>
-                <option value="BCP">BCP</option>
-                <option value="Interbank">Interbank</option>
-                <option value="BBVA">BBVA</option>
-                <option value="Scotiabank">Scotiabank</option>
-                <option value="Otro">Otro</option>
-              </select>
-            </div>
+          <div className="instrucciones-pago">
+            <p>Recibirás un código de confirmación en tu teléfono para completar el pago.</p>
           </div>
         </div>
       )}
+
+      {error && <div className="error-message">{error}</div>}
 
       <div className="acciones-pago">
         <button
           className="btn-volver"
           onClick={onVolver}
-          disabled={procesandoPago}
+          disabled={procesando}
         >
           ← Volver
         </button>
         <button
           className="btn-pagar"
           onClick={handlePago}
-          disabled={procesandoPago || !metodoPago}
+          disabled={procesando || !metodoPago}
         >
-          {procesandoPago ? 'Procesando...' : `Pagar S/ ${total.toFixed(2)}`}
+          {procesando ? 'Procesando...' : `Pagar S/ ${total.toFixed(2)}`}
         </button>
       </div>
     </div>

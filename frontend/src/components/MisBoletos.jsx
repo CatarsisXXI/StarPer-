@@ -8,82 +8,59 @@ const MisBoletos = () => {
   const { user } = useAuth();
   const [boletos, setBoletos] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    if (user?.PasajeroID) {
+    const fetchBoletos = async () => {
+      try {
+        const response = await api.get(`/boleto/pasajero/${user.PasajeroID}`);
+        setBoletos(response.data);
+      } catch (err) {
+        setError('Error al cargar los boletos');
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (user && user.PasajeroID) {
       fetchBoletos();
     }
   }, [user]);
 
-  const fetchBoletos = async () => {
-    try {
-      setLoading(true);
-      const response = await api.get(`/boleto/pasajero/${user.PasajeroID}`);
-      const data = response.data.$values || response.data;
-      setBoletos(data);
-    } catch (err) {
-      setError('Error al cargar los boletos');
-      console.error('Error fetching boletos:', err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const imprimirBoleto = (boleto) => {
+  const generarPDF = (boleto) => {
     const doc = new jsPDF();
 
     doc.setFontSize(16);
     doc.text("STARPERU - Boleto de Pasajero", 20, 20);
 
     doc.setFontSize(12);
-    doc.text(`Boleto ID: ${boleto.BoletoID}`, 20, 40);
-    doc.text(`Pasajero: ${user.Nombre} ${user.Apellido}`, 20, 50);
-    doc.text(`Email: ${user.Email}`, 20, 60);
+    doc.text(`Código de boleto: ${boleto.BoletoID}`, 20, 40);
+    doc.text(`Pasajero: ${user.nombre} ${user.apellido || ''}`, 20, 50);
+    doc.text(`Vuelo: ${boleto.Vuelo?.Origen?.Nombre} → ${boleto.Vuelo?.Destino?.Nombre}`, 20, 60);
+    doc.text(`Fecha salida: ${new Date(boleto.Vuelo?.FechaHoraSalida).toLocaleString()}`, 20, 70);
+    doc.text(`Fecha llegada: ${new Date(boleto.Vuelo?.FechaHoraLlegada).toLocaleString()}`, 20, 80);
+    doc.text(`Asiento: ${boleto.Asiento?.NumeroAsiento}`, 20, 90);
+    doc.text(`Precio: S/ ${boleto.Precio}`, 20, 100);
+    doc.text(`Fecha compra: ${new Date(boleto.FechaCompra).toLocaleString()}`, 20, 110);
 
-    doc.text("----- Detalles del vuelo -----", 20, 80);
-    doc.text(`Origen: ${boleto.Vuelo?.Origen?.Nombre || "—"}`, 20, 90);
-    doc.text(`Destino: ${boleto.Vuelo?.Destino?.Nombre || "—"}`, 20, 100);
-    doc.text(`Fecha salida: ${new Date(boleto.Vuelo?.FechaHoraSalida).toLocaleDateString()}`, 20, 110);
-    doc.text(`Hora salida: ${new Date(boleto.Vuelo?.FechaHoraSalida).toLocaleTimeString()}`, 20, 120);
-    doc.text(`Fecha llegada: ${new Date(boleto.Vuelo?.FechaHoraLlegada).toLocaleDateString()}`, 20, 130);
-    doc.text(`Hora llegada: ${new Date(boleto.Vuelo?.FechaHoraLlegada).toLocaleTimeString()}`, 20, 140);
+    doc.text("----------------------------", 20, 130);
+    doc.text("¡Gracias por volar con StarPeru!", 20, 140);
 
-    doc.text("----- Detalles del asiento -----", 20, 160);
-    doc.text(`Número de asiento: ${boleto.Asiento?.Numero || "—"}`, 20, 170);
-    doc.text(`Clase: ${boleto.Asiento?.Clase || "—"}`, 20, 180);
-
-    doc.text("----- Información de compra -----", 20, 200);
-    doc.text(`Fecha de compra: ${new Date(boleto.FechaCompra).toLocaleDateString()}`, 20, 210);
-    doc.text(`Precio: S/ ${boleto.Precio}`, 20, 220);
-
-    doc.text("----------------------------", 20, 240);
-    doc.text("¡Gracias por volar con StarPeru!", 20, 250);
-
-    doc.save(`Boleto_${boleto.BoletoID}_StarPeru.pdf`);
+    doc.save(`Boleto_${boleto.BoletoID}.pdf`);
   };
 
-  if (loading) {
-    return <div className="mis-boletos-container">
-      <div className="loading">Cargando tus boletos...</div>
-    </div>;
-  }
-
-  if (error) {
-    return <div className="mis-boletos-container">
-      <div className="error">{error}</div>
-    </div>;
-  }
+  if (loading) return <div className="loading">Cargando tus boletos...</div>;
+  if (error) return <div className="error">{error}</div>;
 
   return (
     <div className="mis-boletos-container">
-      <h1>Mis Boletos</h1>
-      <p className="subtitle">Aquí puedes ver todos tus boletos comprados</p>
+      <h2>Mis Boletos</h2>
 
       {boletos.length === 0 ? (
         <div className="no-boletos">
-          <h3>No tienes boletos comprados aún</h3>
-          <p>¡Empieza a planear tu próximo viaje!</p>
+          <p>No tienes boletos comprados aún.</p>
+          <a href="/buscar-vuelos" className="btn-primary">Buscar Vuelos</a>
         </div>
       ) : (
         <div className="boletos-list">
@@ -96,37 +73,22 @@ const MisBoletos = () => {
                 </span>
               </div>
 
-              <div className="boleto-content">
+              <div className="boleto-detalles">
                 <div className="vuelo-info">
-                  <div className="ruta">
-                    <span className="origen">{boleto.Vuelo?.Origen?.Nombre || "—"}</span>
-                    <span className="flecha">→</span>
-                    <span className="destino">{boleto.Vuelo?.Destino?.Nombre || "—"}</span>
-                  </div>
-                  <div className="fecha-hora">
-                    <p>Salida: {new Date(boleto.Vuelo?.FechaHoraSalida).toLocaleDateString()} - {new Date(boleto.Vuelo?.FechaHoraSalida).toLocaleTimeString()}</p>
-                    <p>Llegada: {new Date(boleto.Vuelo?.FechaHoraLlegada).toLocaleDateString()} - {new Date(boleto.Vuelo?.FechaHoraLlegada).toLocaleTimeString()}</p>
-                  </div>
-                </div>
-
-                <div className="asiento-info">
-                  <h4>Asiento</h4>
-                  <p>Número: {boleto.Asiento?.Numero || "—"}</p>
-                  <p>Clase: {boleto.Asiento?.Clase || "—"}</p>
-                </div>
-
-                <div className="precio-info">
-                  <h4>Precio</h4>
-                  <p className="precio">S/ {boleto.Precio}</p>
+                  <p><strong>Vuelo:</strong> {boleto.Vuelo?.Origen?.Nombre} → {boleto.Vuelo?.Destino?.Nombre}</p>
+                  <p><strong>Fecha salida:</strong> {new Date(boleto.Vuelo?.FechaHoraSalida).toLocaleString()}</p>
+                  <p><strong>Fecha llegada:</strong> {new Date(boleto.Vuelo?.FechaHoraLlegada).toLocaleString()}</p>
+                  <p><strong>Asiento:</strong> {boleto.Asiento?.NumeroAsiento}</p>
+                  <p><strong>Precio:</strong> S/ {boleto.Precio}</p>
                 </div>
               </div>
 
-              <div className="boleto-actions">
+              <div className="boleto-acciones">
                 <button
-                  className="btn-imprimir"
-                  onClick={() => imprimirBoleto(boleto)}
+                  className="btn-descargar"
+                  onClick={() => generarPDF(boleto)}
                 >
-                  🖨️ Imprimir Boleto
+                  📄 Descargar PDF
                 </button>
               </div>
             </div>
