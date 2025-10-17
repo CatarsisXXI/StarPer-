@@ -27,7 +27,7 @@ const AdminDashboard = () => {
   }
 };
 
- 
+
   useEffect(() => {
     const fetchStats = async () => {
       try {
@@ -76,26 +76,6 @@ const AdminDashboard = () => {
 
   return (
     <div className="admin-dashboard">
-      <nav className="admin-navbar">
-        <div className="admin-nav-container">
-          <div className="admin-nav-logo">
-            <img
-              src="https://vectorseek.com/wp-content/uploads/2023/09/Star-Peru-Logo-Vector.svg-.png"
-              alt="Star Perú Logo"
-              className="admin-logo-image"
-            />
-            <span className="admin-title">Panel de Administración</span>
-          </div>
-
-          <div className="admin-nav-user">
-            <span className="admin-user-info">Admin: {user?.nombre}</span>
-            <button onClick={handleLogout} className="admin-logout-button">
-              Cerrar Sesión
-            </button>
-          </div>
-        </div>
-      </nav>
-
       <main className="admin-content">
         <div className="dashboard-header">
           <h1>Dashboard de Star Perú</h1>
