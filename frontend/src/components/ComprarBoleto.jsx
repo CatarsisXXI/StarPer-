@@ -19,7 +19,7 @@ const ComprarBoleto = () => {
   const [error, setError] = useState(null);
   const [formData, setFormData] = useState([]);
   const [pasoActual, setPasoActual] = useState('datos'); // 'datos', 'asientos', 'pago', 'confirmacion'
-  const [asientoSeleccionado, setAsientoSeleccionado] = useState(null);
+  const [asientosSeleccionados, setAsientosSeleccionados] = useState([]);
   const [procesandoCompra, setProcesandoCompra] = useState(false);
 
   // 🔹 Obtener vuelo por ID
@@ -85,7 +85,7 @@ const ComprarBoleto = () => {
   const handleSiguiente = () => {
     if (pasoActual === 'datos' && validarDatosPasajeros()) {
       setPasoActual('asientos');
-    } else if (pasoActual === 'asientos' && asientoSeleccionado) {
+    } else if (pasoActual === 'asientos' && asientosSeleccionados.length === formData.length) {
       setPasoActual('pago');
     }
   };
@@ -102,23 +102,34 @@ const ComprarBoleto = () => {
     setProcesandoCompra(true);
 
     try {
-      // Crear el boleto para el primer pasajero (simplificado)
-      const pasajeroData = formData[0]; // Solo el primer pasajero por simplicidad
+      // Crear boletos para todos los pasajeros
+      for (let i = 0; i < formData.length; i++) {
+        const pasajeroData = formData[i];
+        const asientoSeleccionado = asientosSeleccionados[i];
 
-      const purchaseData = {
-        PasajeroID: user.PasajeroID,
-        VueloID: parseInt(vueloId),
-        AsientoID: asientoSeleccionado.AsientoID,
-        Precio: vuelo.Precio
-      };
+        // Calcular precio según tipo de pasajero
+        let precioFinal = vuelo.Precio;
+        if (pasajeroData.tipo === "Niño") {
+          precioFinal *= 0.75; // 75% del precio base
+        } else if (pasajeroData.tipo === "Bebé") {
+          precioFinal *= 0.5; // 50% del precio base
+        }
 
-      const response = await api.post('/boleto/comprar', purchaseData);
+        const purchaseData = {
+          PasajeroID: user.PasajeroID,
+          VueloID: parseInt(vueloId),
+          AsientoID: asientoSeleccionado.AsientoID,
+          Precio: precioFinal
+        };
 
-      if (response.status === 200 || response.status === 201) {
-        setPasoActual('confirmacion');
-      } else {
-        throw new Error('Error al procesar la compra');
+        const response = await api.post('/boleto/comprar', purchaseData);
+
+        if (!(response.status === 200 || response.status === 201)) {
+          throw new Error('Error al procesar la compra');
+        }
       }
+
+      setPasoActual('confirmacion');
     } catch (error) {
       console.error('Error en la compra:', error);
       alert('Error al procesar la compra. Inténtalo nuevamente.');
@@ -162,12 +173,19 @@ const ComprarBoleto = () => {
         20,
         150
       );
-      doc.text(`Precio: S/ ${vuelo.Precio || "—"}`, 20, 160);
 
-      if (asientoSeleccionado) {
+      // Calcular precio según tipo de pasajero
+      let precioFinal = vuelo.Precio;
+      if (p.tipo === "Niño") {
+        precioFinal *= 0.75;
+      } else if (p.tipo === "Bebé") {
+        precioFinal *= 0.5;
+      }
+      doc.text(`Precio: S/ ${precioFinal.toFixed(2)}`, 20, 160);
+
+      if (asientosSeleccionados[index]) {
         doc.text("----- Detalles del asiento -----", 20, 180);
-        doc.text(`Número de asiento: ${asientoSeleccionado.Numero}`, 20, 190);
-        doc.text(`Clase: ${asientoSeleccionado.Clase}`, 20, 200);
+        doc.text(`Número de asiento: ${asientosSeleccionados[index].NumeroAsiento}`, 20, 190);
       }
 
       doc.text("----------------------------", 20, 220);
@@ -182,11 +200,12 @@ const ComprarBoleto = () => {
   if (!vuelo) return <div>No se encontró el vuelo.</div>;
 
   const precio = vuelo.Precio || 0;
-  const total =
-    precio *
-    ((pasajeros?.adultos || 0) +
-      (pasajeros?.ninos || 0) +
-      (pasajeros?.bebes || 0));
+  const total = formData.reduce((sum, p) => {
+    let precioPasajero = precio;
+    if (p.tipo === "Niño") precioPasajero *= 0.75;
+    else if (p.tipo === "Bebé") precioPasajero *= 0.5;
+    return sum + precioPasajero;
+  }, 0);
 
   return (
     <div className="comprar-container">
@@ -236,7 +255,7 @@ const ComprarBoleto = () => {
               {new Date(vuelo.FechaHoraLlegada).toLocaleTimeString("es-ES")}
             </p>
             <p>
-              <strong>Precio por pasajero:</strong> S/ {precio}
+              <strong>Precio base por pasajero:</strong> S/ {precio}
             </p>
           </div>
 
@@ -316,8 +335,9 @@ const ComprarBoleto = () => {
       {pasoActual === 'asientos' && (
         <SeleccionAsiento
           vueloId={vueloId}
-          onAsientoSeleccionado={setAsientoSeleccionado}
-          asientoSeleccionado={asientoSeleccionado}
+          numPasajeros={formData.length}
+          onAsientosSeleccionados={setAsientosSeleccionados}
+          asientosSeleccionados={asientosSeleccionados}
         />
       )}
 
@@ -333,13 +353,13 @@ const ComprarBoleto = () => {
         <div className="confirmacion-compra">
           <div className="confirmacion-icon">✅</div>
           <h3>¡Compra realizada con éxito!</h3>
-          <p>Tu boleto ha sido generado y está disponible en "Mis Boletos".</p>
+          <p>Tus boletos han sido generados y están disponibles en "Mis Boletos".</p>
 
           <div className="detalles-compra">
             <h4>Detalles de la compra:</h4>
             <p><strong>Vuelo:</strong> {vuelo.Origen?.Nombre} → {vuelo.Destino?.Nombre}</p>
             <p><strong>Fecha:</strong> {new Date(vuelo.FechaHoraSalida).toLocaleDateString()}</p>
-            <p><strong>Asiento:</strong> {asientoSeleccionado?.Numero} ({asientoSeleccionado?.Clase})</p>
+            <p><strong>Asientos:</strong> {asientosSeleccionados.map(a => a.NumeroAsiento).join(', ')}</p>
             <p><strong>Total pagado:</strong> S/ {total.toFixed(2)}</p>
           </div>
 
@@ -361,7 +381,7 @@ const ComprarBoleto = () => {
       )}
 
       {/* 🔹 Acciones */}
-      {pasoActual !== 'confirmacion' && pasoActual !== 'pago' && (
+      {pasoActual === 'datos' && (
         <div className="acciones">
           <button className="btn-volver" onClick={() => navigate(-1)}>
             ← Volver
@@ -369,12 +389,9 @@ const ComprarBoleto = () => {
           <button
             className="btn-siguiente"
             onClick={handleSiguiente}
-            disabled={
-              (pasoActual === 'datos' && !validarDatosPasajeros()) ||
-              (pasoActual === 'asientos' && !asientoSeleccionado)
-            }
+            disabled={!validarDatosPasajeros()}
           >
-            {pasoActual === 'datos' ? 'Seleccionar Asiento' : 'Continuar'}
+            Seleccionar Asientos
           </button>
         </div>
       )}
@@ -387,7 +404,7 @@ const ComprarBoleto = () => {
           <button
             className="btn-siguiente"
             onClick={handleSiguiente}
-            disabled={!asientoSeleccionado}
+            disabled={asientosSeleccionados.length !== formData.length}
           >
             Continuar al Pago
           </button>

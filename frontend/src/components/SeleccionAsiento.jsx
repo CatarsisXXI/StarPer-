@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import api from '../services/api';
 import './SeleccionAsiento.css';
 
-const SeleccionAsiento = ({ vueloId, onAsientoSeleccionado, asientoSeleccionado }) => {
+const SeleccionAsiento = ({ vueloId, numPasajeros, onAsientosSeleccionados, asientosSeleccionados }) => {
   const [asientos, setAsientos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -25,16 +25,33 @@ const SeleccionAsiento = ({ vueloId, onAsientoSeleccionado, asientoSeleccionado 
     }
   }, [vueloId]);
 
+  // Actualizar asientos cuando cambie la selección para refrescar el estado visual
+  useEffect(() => {
+    // Forzar re-render para actualizar colores de asientos
+    setAsientos(prev => [...prev]);
+  }, [asientosSeleccionados]);
+
   const handleAsientoClick = (asiento) => {
-    if (asiento.Disponible) {
-      onAsientoSeleccionado(asiento);
+    if (!asiento.Disponible) return;
+
+    const isSelected = asientosSeleccionados.some(a => a.AsientoID === asiento.AsientoID);
+
+    if (isSelected) {
+      // Deseleccionar asiento
+      const nuevosSeleccionados = asientosSeleccionados.filter(a => a.AsientoID !== asiento.AsientoID);
+      onAsientosSeleccionados(nuevosSeleccionados);
+    } else {
+      // Seleccionar asiento (solo si no se ha alcanzado el límite)
+      if (asientosSeleccionados.length < numPasajeros) {
+        onAsientosSeleccionados([...asientosSeleccionados, asiento]);
+      }
     }
   };
 
   if (loading) return <div className="loading">Cargando asientos...</div>;
   if (error) return <div className="error">{error}</div>;
 
-  // Organizar asientos en filas (asumiendo 6 asientos por fila)
+  // Organizar asientos en filas (asumiendo 6 asientos por fila con pasillo)
   const filas = [];
   for (let i = 0; i < asientos.length; i += 6) {
     filas.push(asientos.slice(i, i + 6));
@@ -42,30 +59,61 @@ const SeleccionAsiento = ({ vueloId, onAsientoSeleccionado, asientoSeleccionado 
 
   return (
     <div className="seleccion-asiento">
-      <h3>Selecciona tu asiento</h3>
+      <h3>Selecciona tus asientos ({asientosSeleccionados.length}/{numPasajeros})</h3>
       <div className="avion-layout">
         <div className="cabina">
+          {/* Puerta de ingreso */}
+          <div className="puerta-ingreso">
+            <div className="puerta-icon">🚪</div>
+            <span className="puerta-label">Puerta de Ingreso</span>
+          </div>
+
           {filas.map((fila, filaIndex) => (
             <div key={filaIndex} className="fila">
               <span className="numero-fila">{filaIndex + 1}</span>
               <div className="asientos-fila">
-                {fila.map((asiento) => (
-                  <button
-                    key={asiento.AsientoID}
-                    className={`asiento ${
-                      asiento.Disponible ? 'disponible' : 'ocupado'
-                    } ${
-                      asientoSeleccionado && asientoSeleccionado.AsientoID === asiento.AsientoID
-                        ? 'seleccionado'
-                        : ''
-                    }`}
-                    onClick={() => handleAsientoClick(asiento)}
-                    disabled={!asiento.Disponible}
-                    title={`Asiento ${asiento.NumeroAsiento} - ${asiento.Disponible ? 'Disponible' : 'Ocupado'}`}
-                  >
-                    {asiento.NumeroAsiento}
-                  </button>
-                ))}
+                {/* Asientos lado izquierdo */}
+                {fila.slice(0, 3).map((asiento) => {
+                  const isSelected = asientosSeleccionados.some(a => a.AsientoID === asiento.AsientoID);
+                  return (
+                    <button
+                      key={asiento.AsientoID}
+                      className={`asiento ${
+                        asiento.Disponible ? 'disponible' : 'ocupado'
+                      } ${
+                        isSelected ? 'seleccionado' : ''
+                      }`}
+                      onClick={() => handleAsientoClick(asiento)}
+                      disabled={!asiento.Disponible}
+                      title={`Asiento ${asiento.NumeroAsiento} - ${asiento.Disponible ? 'Disponible' : 'Ocupado'}`}
+                    >
+                      {asiento.NumeroAsiento}
+                    </button>
+                  );
+                })}
+
+                {/* Pasillo */}
+                <div className="pasillo"></div>
+
+                {/* Asientos lado derecho */}
+                {fila.slice(3, 6).map((asiento) => {
+                  const isSelected = asientosSeleccionados.some(a => a.AsientoID === asiento.AsientoID);
+                  return (
+                    <button
+                      key={asiento.AsientoID}
+                      className={`asiento ${
+                        asiento.Disponible ? 'disponible' : 'ocupado'
+                      } ${
+                        isSelected ? 'seleccionado' : ''
+                      }`}
+                      onClick={() => handleAsientoClick(asiento)}
+                      disabled={!asiento.Disponible}
+                      title={`Asiento ${asiento.NumeroAsiento} - ${asiento.Disponible ? 'Disponible' : 'Ocupado'}`}
+                    >
+                      {asiento.NumeroAsiento}
+                    </button>
+                  );
+                })}
               </div>
             </div>
           ))}

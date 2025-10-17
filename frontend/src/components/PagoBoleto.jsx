@@ -167,7 +167,16 @@ const PagoBoleto = ({ total, onPagoCompletado, onVolver }) => {
                 type="text"
                 name="fechaExpiracion"
                 value={datosPago.fechaExpiracion}
-                onChange={handleInputChange}
+                onChange={(e) => {
+                  let value = e.target.value.replace(/\D/g, '');
+                  if (value.length >= 2) {
+                    value = value.slice(0, 2) + '/' + value.slice(2, 4);
+                  }
+                  setDatosPago(prev => ({
+                    ...prev,
+                    fechaExpiracion: value
+                  }));
+                }}
                 placeholder="MM/AA"
                 maxLength="5"
               />

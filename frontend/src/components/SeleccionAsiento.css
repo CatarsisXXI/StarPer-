@@ -17,6 +17,28 @@
   align-items: center;
 }
 
+.puerta-ingreso {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 20px;
+  padding: 10px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border: 2px solid #1a365d;
+}
+
+.puerta-icon {
+  font-size: 24px;
+  margin-bottom: 5px;
+}
+
+.puerta-label {
+  font-size: 12px;
+  font-weight: bold;
+  color: #1a365d;
+}
+
 .cabina {
   background: #e2e8f0;
   padding: 20px;
@@ -55,7 +77,16 @@
 
 .asientos-fila {
   display: flex;
+  align-items: center;
   gap: 10px;
+}
+
+.pasillo {
+  width: 20px;
+  height: 40px;
+  background: #cbd5e0;
+  border-radius: 4px;
+  margin: 0 10px;
 }
 
 .asiento {

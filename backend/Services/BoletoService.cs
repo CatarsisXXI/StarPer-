@@ -10,15 +10,18 @@ namespace StarPeru.Api.Services
         private readonly IBoletoRepository _boletoRepository;
         private readonly IVueloRepository _vueloRepository;
         private readonly IPasajeroRepository _pasajeroRepository;
+        private readonly IAsientoRepository _asientoRepository;
 
         public BoletoService(
             IBoletoRepository boletoRepository,
             IVueloRepository vueloRepository,
-            IPasajeroRepository pasajeroRepository)
+            IPasajeroRepository pasajeroRepository,
+            IAsientoRepository asientoRepository)
         {
             _boletoRepository = boletoRepository;
             _vueloRepository = vueloRepository;
             _pasajeroRepository = pasajeroRepository;
+            _asientoRepository = asientoRepository;
         }
 
         public async Task<IEnumerable<Boleto>> GetAllAsync()
@@ -41,6 +44,11 @@ namespace StarPeru.Api.Services
             var pasajero = await _pasajeroRepository.GetByIdAsync(dto.PasajeroID);
             if (pasajero == null) throw new ArgumentException("Pasajero no encontrado");
 
+            // Validar que el asiento existe y está disponible
+            var asiento = await _asientoRepository.GetByIdAsync(dto.AsientoID);
+            if (asiento == null) throw new ArgumentException("Asiento no encontrado");
+            if (!asiento.Disponible) throw new ArgumentException("Asiento no disponible");
+
             // Aquí se debería implementar la lógica de precios, disponibilidad de asientos, etc.
             // Por simplicidad, creamos el boleto directamente
 
@@ -52,6 +60,10 @@ namespace StarPeru.Api.Services
                 Precio = dto.Precio,
                 FechaCompra = DateTime.Now
             };
+
+            // Marcar el asiento como ocupado después de crear el boleto
+            asiento.Disponible = false;
+            await _asientoRepository.UpdateAsync(asiento);
 
             return await _boletoRepository.CreateAsync(boleto);
         }
