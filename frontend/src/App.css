@@ -85,7 +85,7 @@
   --z-popover: 1060;
   --z-tooltip: 1070;
  }
- 
+
 
 /* Reset y estilos base */
 * {
@@ -93,12 +93,12 @@
   padding: 0;
   box-sizing: border-box;
  }
- 
+
 
 html {
   scroll-behavior: smooth;
  }
- 
+
 
 body {
   font-family: var(--font-primary);
@@ -106,10 +106,27 @@ body {
   font-weight: var(--font-normal);
   line-height: 1.6;
   color: var(--darker-gray);
-  background-color: var(--off-white);
+  background-image: url('./assets/fondo .png');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  min-height: 100vh;
+  position: relative;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   padding-top: 70px; /* Compensar la altura fija de la navbar */
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.95);
+  z-index: -1;
 }
 
 /* Estilos de texto */
@@ -187,12 +204,12 @@ a:hover {
   transition: all var(--transition-normal);
   box-shadow: var(--shadow-sm);
  }
- 
+
 .btn:hover {
   transform: translateY(-2px);
   box-shadow: var(--shadow-md);
  }
- 
+
 .btn:active {
   transform: translateY(0);
 }
