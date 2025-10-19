@@ -418,3 +418,45 @@ a:hover {
 ::-webkit-scrollbar-thumb:hover {
   background: var(--dark-gray);
 }
+
+/* Filtros SVG para simular daltonismo */
+.accessibility-filters {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+}
+
+.accessibility-filters svg {
+  width: 0;
+  height: 0;
+}
+
+/* Filtros de color para daltonismo */
+.color-filter-protanopia {
+  filter: url('#protanopia-filter');
+}
+
+.color-filter-protanomaly {
+  filter: url('#protanomaly-filter');
+}
+
+.color-filter-deuteranopia {
+  filter: url('#deuteranopia-filter');
+}
+
+.color-filter-deuteranomaly {
+  filter: url('#deuteranomaly-filter');
+}
+
+.color-filter-tritanopia {
+  filter: url('#tritanopia-filter');
+}
+
+.color-filter-tritanomaly {
+  filter: url('#tritanomaly-filter');
+}
+
+.color-filter-achromatopsia {
+  filter: grayscale(100%);
+}

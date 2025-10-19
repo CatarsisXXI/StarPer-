@@ -1,7 +1,10 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
+import { AccessibilityProvider } from './contexts/AccessibilityContext';
 import Navbar from './components/Navbar';
+import AccessibilityPanel from './components/AccessibilityPanel';
+import AccessibilityFilters from './components/AccessibilityFilters';
 import Destinos from './components/Destinos';
 import BusquedaVuelos from './components/BusquedaVuelos';
 import Login from './components/Login';
@@ -21,10 +24,13 @@ import MisBoletos from './components/MisBoletos';
  function App() {
    return (
 
-    <AuthProvider>
-      <Router>
-        <Navbar />
-        <Routes>
+    <AccessibilityProvider>
+      <AuthProvider>
+        <Router>
+          <AccessibilityFilters />
+          <Navbar />
+          <AccessibilityPanel />
+          <Routes>
           <Route path="/" element={<Navigate to="/destinos" />} />
           <Route path="/destinos" element={<Destinos />} />
           <Route path="/buscar-vuelos" element={
@@ -108,6 +114,7 @@ import MisBoletos from './components/MisBoletos';
         </Routes>
       </Router>
     </AuthProvider>
+    </AccessibilityProvider>
    );
  }
 export default App;
