@@ -14,19 +14,13 @@ export const AccessibilityProvider = ({ children }) => {
   const [ttsEnabled, setTtsEnabled] = useState(false);
   const [colorFilter, setColorFilter] = useState('default');
 
-  // Aplicar filtro de color al body y al pseudo-elemento ::before
+  // Aplicar filtro de color al documento raíz (html) para filtrar todo consistentemente
   useEffect(() => {
-    const body = document.body;
-    // Remover filtros previos del body
-    body.className = body.className.replace(/color-filter-\w+/g, '').trim();
+    const root = document.documentElement;
+    // Remover filtros previos del html
+    root.className = root.className.replace(/color-filter-\w+/g, '').trim();
     if (colorFilter !== 'default') {
-      body.classList.add(`color-filter-${colorFilter}`);
-    }
-
-    // Aplicar filtro al pseudo-elemento ::before (fondo)
-    const beforeElement = document.querySelector('body::before');
-    if (beforeElement) {
-      beforeElement.style.filter = colorFilter !== 'default' ? `url('#${colorFilter}-filter')` : 'none';
+      root.classList.add(`color-filter-${colorFilter}`);
     }
   }, [colorFilter]);
 
